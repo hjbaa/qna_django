@@ -1,3 +1,5 @@
+{% load static %}
+
 <!doctype html>
 <html lang="en" class="h-100" data-bs-theme="auto">
 <head>
@@ -5,9 +7,9 @@
   <meta charset="utf-8">
   <title>Stack Overrofl</title>
 
-  <link href="../static/css/bootstrap.css" rel="stylesheet" crossorigin="anonymous">
   <!-- Custom styles for this template -->
-  <link href="../static/css/static.css" rel="stylesheet">
+  <link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
+  <link href="{% static "css/static.css" %}" rel="stylesheet">
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -291,7 +293,7 @@
       <div class="col-4 text-end tags-members-block ps-5">
         <div class="popular-tags mb-3">
           <div><p class="h3">Most popular tags</p></div>
-\          <div id="popular-tags">
+          <div id="popular-tags">
             <p>
               <a href="show_tag.html" class="fs-4 link-secondary">SQL</a>
               <a href="show_tag.html" class="fs-4 link-danger">Python</a>
