@@ -287,4 +287,4 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/pycharm,django
 
 .idea
-.env.dev
+askme_django/.dev.env
