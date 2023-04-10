@@ -289,3 +289,4 @@ venv
 
 .idea
 askme_django/.env
+postgres_data
