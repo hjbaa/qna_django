@@ -14,7 +14,7 @@ def index(request):
 
 
 def show_question(request, question_id):
-    return render(request, 'question.html')
+    return render(request, 'show_question.html')
 
 
 def hot(request):
