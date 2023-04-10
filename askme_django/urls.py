@@ -19,6 +19,9 @@ from django.urls import path
 from askme_app import views
 
 urlpatterns = [
-    path('', views.index),
+    path('', views.index, name="index"),
+    path('login/', views.log_in, name="login"),
+    path('sign_up/', views.sign_up, name="signup"),
+    path('question/<int:question_id>', views.show_question, name="question"),
     path('admin/', admin.site.urls),
 ]

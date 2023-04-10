@@ -243,6 +243,7 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+venv
 
 # Editor-based Rest Client
 .idea/httpRequests
@@ -287,4 +288,4 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/pycharm,django
 
 .idea
-askme_django/.dev.env
+askme_django/.env

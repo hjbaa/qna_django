@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'askme_app',
 ]
 
 MIDDLEWARE = [
@@ -80,8 +81,8 @@ WSGI_APPLICATION = 'askme_django.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": str(os.getenv("SQL_ENGINE", "django.db.backends.sqlite3")),
-        "NAME": str(os.getenv("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3"))),
+        "ENGINE": str(os.getenv("SQL_ENGINE")),
+        "NAME": str(os.getenv("SQL_DATABASE")),
         "USER": str(os.getenv("SQL_USER", "user")),
         "PASSWORD": str(os.getenv("SQL_PASSWORD", "password")),
         "HOST": str(os.getenv("SQL_HOST", "localhost")),
@@ -125,6 +126,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_URL = 'uploads/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

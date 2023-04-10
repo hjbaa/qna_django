@@ -18,5 +18,9 @@ def main():
     execute_from_command_line(sys.argv)
 
 
+def fill_database(ratio):
+    return
+
+
 if __name__ == '__main__':
     main()
