@@ -20,11 +20,11 @@
     <div class="container">
       <ul class="navbar-nav mb-2 mb-md-0">
         <li class="nav-item py-1">
-          <a class="navbar-brand" href="index.html">StackOverRofl</a>
+          <a class="navbar-brand" href="{% url 'index' %}">StackOverRofl</a>
         </li>
 
         <li class="nav-item">
-          <a class="btn btn-outline-primary" href="new_question.html">Ask question</a>
+          <a class="btn btn-outline-primary" href="{% url 'ask_question' %}">Ask question</a>
         </li>
       </ul>
       <form class="me-2 w-50">
@@ -35,10 +35,10 @@
       </form>
       <ul class="navbar-nav mb-2 mb-md-0">
         <li class="nav-item">
-          <a class="nav-link" href="login.html">Login</a>
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="signup.html">Sign up</a>
+          <a class="nav-link" href="{% url 'sign_up' %}">Sign up</a>
         </li>
       </ul>
     </div>

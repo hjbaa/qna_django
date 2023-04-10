@@ -8,15 +8,17 @@ from askme_app.models import Question
 
 def index(request):
     questions = Question.objects.all()
-    print(questions)
-
-    context = {'questions': 123}
+    context = {'questions': questions}
 
     return render(request, 'index.html', context)
 
 
 def show_question(request, question_id):
     return render(request, 'question.html')
+
+
+def hot(request):
+    return render(request, 'hot.html')
 
 
 def log_in(request):
@@ -33,4 +35,3 @@ def new_question(request):
 
 def show_by_tag(request):
     return render(request, 'show_tag.html')
-

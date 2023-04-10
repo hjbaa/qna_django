@@ -1,4 +1,5 @@
 {% extends "include/base.html" %}
+{% load static %}
 
 {% block content %}
   <ul class="list-group list-group-horizontal mt-5 align-items-baseline mb-4">
@@ -6,7 +7,7 @@
       <h1>All questions</h1>
     </li>
     <li class="list-group-item border-0 px-4">
-      <h2><a href="hot.html">Hot questions</a></h2>
+      <h2><a href="{% url 'hot_questions' %}">Hot questions</a></h2>
     </li>
   </ul>
 
@@ -32,178 +33,15 @@
 
   <div class="row mt-3">
     <div class="col-8 questions">
-
-      <div class="question mb-4">
-        <div class="row">
-          <div class="col-3">
-            <div class="question-avatar mb-3">
-              <img src="../static/img/drinking%20horse.jpg" alt="user-avatar"/>
-            </div>
-            <div class="d-flex ps-3 pt-2">
-              <div class="question-rating">
-                <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-                  <button type="button" class="btn btn-outline-secondary"><img src="../static/svg/arrow-up.svg" alt="down-vote"/></button>
-                  <button type="button" class="btn btn-outline-secondary disabled">4</button>
-                  <button type="button" class="btn btn-outline-secondary"><img src="../static/svg/arrow-down.svg" alt="down-vote"/></button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-8 question-text">
-            <div class="question-title">
-              <h2><a href="question.html" class="link link-opacity-75-hover">Here is your perfect title</a></h2>
-            </div>
-            <div class="question-description">
-              <p class="text-muted question-description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus tincidunt turpis viverra erat gravida, non faucibus neque vehicula.
-                Duis eros neque, egestas vel leo ac, vestibulum volutpat lectus.
-                Nam viverra, diam quis elementum rutrum, urna lectus tristique justo, at egestas ex enim sed massa.
-                Fusce at ligula tellus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus tincidunt turpis viverra erat gravida, non faucibus neque vehicula.
-                Duis eros neque, egestas vel leo ac, vestibulum volutpat lectus.
-                Nam viverra, diam quis elementum rutrum, urna lectus tristique justo, at egestas ex enim sed massa.
-                Fusce at ligula tellus.
-              </p>
-            </div>
-            <div class="question-links">
-              <div class="row align-items-baseline">
-                <div class="col-3">
-                  <p class="text-muted"><a id="question-2-answers-link" href="question.html">Answer (3)</a></p>
-                </div>
-                <div class="col-9">
-                  <div class="row  align-items-baseline">
-                    <div class="col-2">
-                      <p class="text-muted">Tags: </p>
-                    </div>
-                    <div class="col-10">
-                      <ul class="list-group list-group-horizontal">
-                        <li class="list-group-item">
-                          <a href="show_tag.html" class="text-muted">Hello</a>
-                        </li>
-                        <li class="list-group-item">
-                          <a href="show_tag.html" class="text-muted">world</a>
-                        </li>
-                        <li class="list-group-item">
-                          <a href="show_tag.html" class="text-muted">i am</a>
-                        </li>
-                        <li class="list-group-item">
-                          <a href="show_tag.html" class="text-muted">egor</a>
-                        </li>
-                        <li class="list-group-item">
-                          <a href="show_tag.html" class="text-muted">Hello</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="question mb-4">
-        <div class="row">
-          <div class="col-3">
-            <div class="question-avatar mb-3">
-              <img src="../static/img/ava.png" alt="user-avatar"/>
-            </div>
-            <div class="d-flex ps-3 pt-2">
-              <div class="question-rating">
-                <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-                  <button type="button" class="btn btn-outline-secondary"><img src="../static/svg/arrow-up.svg" alt="down-vote"/></button>
-                  <button type="button" class="btn btn-outline-secondary disabled">6</button>
-                  <button type="button" class="btn btn-outline-secondary"><img src="../static/svg/arrow-down.svg" alt="down-vote"/></button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-8 question-text">
-            <div class="question-title">
-              <h2><a href="question.html" class="link link-opacity-75-hover">Here is your perfect title</a></h2>
-            </div>
-            <div class="question-description">
-              <p class="text-muted question-description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus tincidunt turpis viverra erat gravida, non faucibus neque vehicula.
-                Duis eros neque, egestas vel leo ac, vestibulum volutpat lectus.
-                Nam viverra, diam quis elementum rutrum, urna lectus tristique justo, at egestas ex enim sed massa.
-                Fusce at ligula tellus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus tincidunt turpis viverra erat gravida, non faucibus neque vehicula.
-                Duis eros neque, egestas vel leo ac, vestibulum volutpat lectus.
-                Nam viverra, diam quis elementum rutrum, urna lectus tristique justo, at egestas ex enim sed massa.
-                Fusce at ligula tellus.
-              </p>
-            </div>
-            <div class="question-links">
-              <div class="row align-items-baseline">
-                <div class="col-3">
-                  <p class="text-muted"><a id="question-3-answers-link" href="question.html">Answer (3)</a></p>
-                </div>
-                <div class="col-9">
-                  <div class="row  align-items-baseline">
-                    <div class="col-2">
-                      <p class="text-muted">Tags: </p>
-                    </div>
-                    <div class="col-10">
-                      <ul class="list-group list-group-horizontal">
-                        <li class="list-group-item">
-                          <a href="show_tag.html" class="text-muted">Hello</a>
-                        </li>
-                        <li class="list-group-item">
-                          <a href="show_tag.html" class="text-muted">world</a>
-                        </li>
-                        <li class="list-group-item">
-                          <a href="show_tag.html" class="text-muted">i am</a>
-                        </li>
-                        <li class="list-group-item">
-                          <a href="show_tag.html" class="text-muted">egor</a>
-                        </li>
-                        <li class="list-group-item">
-                          <a href="show_tag.html" class="text-muted">Hello</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {% for question in questions %}
+        {% block question %}
+          {% include 'include/question_item.html' with question=question %}
+        {% endblock %}
+      {% endfor %}
     </div>
 
     <div class="col-4 text-end tags-members-block ps-5">
-      <div class="popular-tags mb-3">
-        <div><p class="h3">Most popular tags</p></div>
-        <div id="popular-tags">
-          <p>
-            <a href="show_tag.html" class="fs-4 link-secondary">SQL</a>
-            <a href="show_tag.html" class="fs-4 link-danger">Python</a>
-            <a href="show_tag.html" class="fs-4 link-secondary">C++</a>
-            <a href="show_tag.html" class="fs-4 link-secondary">Java</a>
-            <a href="show_tag.html" class="fs-4 link-secondary">Go</a>
-            <a href="show_tag.html" class="fs-4 link-danger">PHP</a>
-            <a href="show_tag.html" class="fs-4 link-secondary">Ruby</a>
-          </p>
-        </div>
-      </div>
-
-      <div class="best-members">
-        <div><p class="h3">Best members</p></div>
-        <div id="best-members">
-          <ul>
-            <li><a href="#" class="fs-4 link-secondary">Egor</a></li>
-            <li><a href="#" class="fs-4 link-secondary">Skandakov</a></li>
-            <li><a href="#" class="fs-4 link-secondary">hjbaa</a></li>
-            <li><a href="#" class="fs-4 link-secondary">Hello</a></li>
-            <li><a href="#" class="fs-4 link-secondary">World</a></li>
-            <li><a href="#" class="fs-4 link-secondary">Bod9</a></li>
-          </ul>
-        </div>
-      </div>
+      {% include 'include/tags_and_members_col.html' %}
     </div>
   </div>
 {% endblock %}
