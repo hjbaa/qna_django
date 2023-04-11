@@ -16,8 +16,14 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
 
-    print(sys.argv)
-    execute_from_command_line(sys.argv)
+    if len(sys.argv) == 3 and sys.argv[1] == '':
+        fill_db(int(sys.argv[2]))
+    else:
+        execute_from_command_line(sys.argv)
+
+
+def fill_db(ratio):
+    ...
 
 
 if __name__ == '__main__':
