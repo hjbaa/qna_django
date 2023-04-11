@@ -13,7 +13,7 @@ class Vote(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
     created_at = models.DateTimeField(auto_now_add=True)
-    # author
+    author = models.ForeignKey(User, on_delete=models.CASCADE, default="")
 
 
 class Tag(models.Model):
@@ -27,6 +27,7 @@ class Question(models.Model):
     votes = GenericRelation(Vote)
     created_at = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, default="")
 
 
 class Answer(models.Model):
@@ -34,7 +35,8 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     votes = GenericRelation(Vote)
     created_at = models.DateTimeField(auto_now_add=True)
-    # author
+    is_correct = models.BooleanField(default=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, default="")
 
 
 class Profile(models.Model):
