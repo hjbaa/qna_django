@@ -14,7 +14,7 @@
                         <div class="question-answer-rating">
                             <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
                                 <button type="button" class="btn btn-outline-secondary"><img src="../static/svg/arrow-up.svg" alt="down-vote"/></button>
-                                <button type="button" class="btn btn-outline-secondary disabled">3</button>
+                                <button type="button" class="btn btn-outline-secondary disabled">{{ question.get_rating() }}</button>
                                 <button type="button" class="btn btn-outline-secondary"><img src="../static/svg/arrow-down.svg" alt="down-vote"/></button>
                             </div>
                         </div>
@@ -23,7 +23,7 @@
 
                 <div class="col-8 question-answer-text">
                     <div class="question-title">
-                        <h2><a href="question.html" class="link link-opacity-75-hover">{{ question.title }}</a></h2>
+                        <h2>{{ question.title }}</h2>
                     </div>
                     <div class="question-answer-description">
                         <p class="text-muted question-answer-description">{{ question.body }}</p>

@@ -14,6 +14,6 @@ fi
 # Очистка БД
 #python manage.py flush --no-input
 # Запуск миграций
-#python manage.py migrate
+python manage.py migrate
 
 exec "$@"

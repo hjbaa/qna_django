@@ -36,7 +36,7 @@
       <div class="col-8 questions">
         {% for question in questions %}
           {% block question %}
-            {% include 'include/question_item.html' with question=question %}
+              {% include 'include/question_item.html' with question=question %}
           {% endblock %}
         {% endfor %}
       </div>

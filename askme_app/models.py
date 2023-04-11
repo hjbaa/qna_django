@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Sum, Count
+
 from askme_django.settings import MEDIA_URL
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.fields import GenericRelation
@@ -9,14 +11,21 @@ from django.contrib.contenttypes.models import ContentType
 class Vote(models.Model):
     rate = models.IntegerField(default=0)
 
+    # Полиморфная ассоциация, может относиться как к Question, так и к Answer
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
+
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, default="")
 
     def __str__(self):
         return f"rate:{self.rate};\tcontent_type:{self.content_type};\tauthor:{self.author_id}"
+
+
+class TagManager(models.Manager):
+    def sort_by_related_question_quantity(self):
+        return self.annotate(num_questions=Count('question')).order_by('-num_questions')
 
 
 class Tag(models.Model):
@@ -27,6 +36,14 @@ class Tag(models.Model):
         return f"id: {self.id};\t title: {self.title}"
 
 
+class QuestionManager(models.Manager):
+    def sorted_by_rating(self):
+        return self.annotate(total_votes=Sum('votes__rate')).order_by('-total_votes')
+
+    def sorted_by_created_at(self):
+        return self.order_by('-created_at')
+
+
 class Question(models.Model):
     title = models.CharField(max_length=255)
     body = models.TextField()
@@ -35,8 +52,13 @@ class Question(models.Model):
     tags = models.ManyToManyField(Tag)
     author = models.ForeignKey(User, on_delete=models.CASCADE, default="")
 
+    objects = QuestionManager()
+
     def __str__(self):
         return f"title: {self.title};\t votes: {self.votes};\t tags: {self.tags}"
+
+    def get_rating(self):
+        return self.votes.aggregate(Sum('rate'))['rate__sum']
 
 
 class Answer(models.Model):
