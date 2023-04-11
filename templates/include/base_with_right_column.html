@@ -1,0 +1,45 @@
+{% extends "include/base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="container">
+    {% block content-header %}
+    {% endblock %}
+
+    <div class="row mt-3">
+        <div class="col-8 questions">
+            {% block left-column %}{% endblock %}
+        </div>
+
+        <div class="col-4 text-end tags-members-block ps-5">
+          <div class="popular-tags mb-3">
+            <div><p class="h3">Most popular tags</p></div>
+            <div id="popular-tags">
+              <p>
+                {% for tag in global_tags %}
+                  {% block tag_link %}
+                    <a href="{% url 'by_tag' tag.title %}" class="fs-4 link-secondary">{{ tag.title }}</a>
+                  {% endblock %}
+                {% endfor %}
+              </p>
+            </div>
+          </div>
+
+          <div class="best-members">
+            <div><p class="h3">Best members</p></div>
+            <div id="best-members">
+              <ul>
+                <li><a href="#" class="fs-4 link-secondary">Egor</a></li>
+                <li><a href="#" class="fs-4 link-secondary">Skandakov</a></li>
+                <li><a href="#" class="fs-4 link-secondary">hjbaa</a></li>
+                <li><a href="#" class="fs-4 link-secondary">Hello</a></li>
+                <li><a href="#" class="fs-4 link-secondary">World</a></li>
+                <li><a href="#" class="fs-4 link-secondary">Bod9</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+
+{% endblock %}

@@ -30,7 +30,9 @@
         <div class="question-links">
           <div class="row align-items-baseline">
             <div class="col-3">
-              <p class="text-muted"><a id="question-1-answers-link" href="{% url 'question' question.id %}">Answer (3)</a></p>
+              <p class="text-muted">
+                <a id="question-1-answers-link" href="{% url 'question' question.id %}">Answer ({{ question.answer_set.count }})</a>
+              </p>
             </div>
             <div class="col-9">
               <div class="row  align-items-baseline">

@@ -1,27 +1,32 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from askme_app.models import Question, Tag
+from askme_app.models import Question, Tag, Answer
 
 
 # Create your views here.
 
 def index(request):
-    questions = Question.objects.sorted_by_created_at()
-    context = {'questions': questions}
+    context = {'questions': Question.objects.sorted_by_created_at(),
+               'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
+               }
 
     return render(request, 'index.html', context)
 
 
 def show_question(request, question_id):
-    question = Question.objects.get(pk=question_id)
-    context = {'question': question}
-    return render(request, 'show_question.html')
+    context = {'question': Question.objects.get(pk=question_id),
+               'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
+               'answers': Answer.objects.filter(question_id=question_id)
+               }
+    return render(request, 'show_question.html', context)
 
 
 def hot(request):
-    questions = Question.objects.sorted_by_rating()
-    context = {'questions': questions}
+    context = {'questions': Question.objects.sorted_by_rating(),
+               'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
+               }
+
     return render(request, 'hot.html', context)
 
 

@@ -6,6 +6,7 @@ main > .container {
     border: 1px solid lightgray;
     border-radius: 10px;
     padding: 10px;
+    min-height: 200px;
 }
 
 .question-avatar {
@@ -18,10 +19,6 @@ main > .container {
     width: 100%;
     object-fit: cover;
     border-radius: 50%;
-}
-
-.question {
-    min-height: 200px;
 }
 
 .question-description > p {
@@ -90,4 +87,32 @@ main > .container {
 
 #new-question-form textarea {
     height: 200px;
+}
+
+.answer {
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    padding: 10px;
+    min-height: 200px;
+}
+
+.answer-avatar {
+    height: 90px;
+    width: 90px;
+}
+
+.answer-avatar > img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.answer-rating {
+    border-radius: 5px;
+    border: 1px lightgray;
+}
+
+.answer-rating > .input-group {
+    max-height: 50px;
 }

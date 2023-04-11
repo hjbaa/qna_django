@@ -32,6 +32,8 @@ class Tag(models.Model):
     title = models.CharField(max_length=100, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    objects = TagManager()
+
     def __str__(self):
         return f"id: {self.id};\t title: {self.title}"
 
@@ -58,7 +60,11 @@ class Question(models.Model):
         return f"title: {self.title};\t votes: {self.votes};\t tags: {self.tags}"
 
     def get_rating(self):
-        return self.votes.aggregate(Sum('rate'))['rate__sum']
+        rating = self.votes.aggregate(Sum('rate'))['rate__sum']
+        return rating if rating is not None else 0
+
+    def answers_count(self):
+        return Count(Answer.objects.filter(question_id=self.id))
 
 
 class Answer(models.Model):
@@ -71,6 +77,10 @@ class Answer(models.Model):
 
     def __str__(self):
         return f"question_id: {self.question_id};\t votes: {self.votes}"
+
+    def get_rating(self):
+        rating = self.votes.aggregate(Sum('rate'))['rate__sum']
+        return rating if rating is not None else 0
 
 
 class Profile(models.Model):
