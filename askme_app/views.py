@@ -39,7 +39,9 @@ def sign_up(request):
 
 
 def new_question(request):
-    return render(request, 'new_question.html')
+    context = {'global_tags': Tag.objects.sort_by_related_question_quantity()[:10]}
+
+    return render(request, 'new_question.html', context)
 
 
 def show_by_tag(request, title):
