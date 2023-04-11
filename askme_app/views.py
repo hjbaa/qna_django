@@ -45,3 +45,5 @@ def new_question(request):
 def show_by_tag(request, title):
     tag = Tag.objects.get(title=title)
     return render(request, 'show_tag.html')
+
+# TODO: Pagination

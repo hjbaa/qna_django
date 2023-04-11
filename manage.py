@@ -4,6 +4,7 @@ import os
 import sys
 
 
+# TODO: Management Command
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'askme_django.settings')
@@ -15,15 +16,7 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
-
-    if len(sys.argv) == 3 and sys.argv[1] == '':
-        fill_db(int(sys.argv[2]))
-    else:
-        execute_from_command_line(sys.argv)
-
-
-def fill_db(ratio):
-    ...
+    execute_from_command_line(sys.argv)
 
 
 if __name__ == '__main__':
