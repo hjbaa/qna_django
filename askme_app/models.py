@@ -57,7 +57,7 @@ class Question(models.Model):
     objects = QuestionManager()
 
     def __str__(self):
-        return f"title: {self.title};\t votes: {self.votes};\t tags: {self.tags}"
+        return f"title: {self.title};\t votes: {self.votes};"
 
     def get_rating(self):
         rating = self.votes.aggregate(Sum('rate'))['rate__sum']
