@@ -14,13 +14,14 @@ class Vote(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
-
-    # TODO: Добавить уникальность по 3 полям
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, default="")
 
     def __str__(self):
         return f"rate:{self.rate};\tcontent_type:{self.content_type};\tauthor:{self.author_id}"
+
+    class Meta:
+        unique_together = ('author', 'content_type', 'object_id',)
 
 
 class TagManager(models.Manager):
