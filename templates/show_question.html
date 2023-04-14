@@ -8,9 +8,60 @@
 
 {% block left-column %}
   <div class="mb-3">
-      {% block question %}
-        {% include 'include/question_item.html' with question=question %}
-      {% endblock %}
+      <div class="question mb-4">
+    <div class="row">
+      <div class="col-3">
+        <div class="question-avatar mb-3">
+          <img src="{% static "img/otto-removebg-preview.png" %}" alt="user-avatar"/>
+        </div>
+        <div class="d-flex ps-3 pt-2">
+          <div class="question-rating">
+            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+              <button type="button" class="btn btn-outline-secondary"><img src="{% static "svg/arrow-up.svg" %}" alt="down-vote"/></button>
+              <button type="button" class="btn btn-outline-secondary disabled">{{ question.get_rating }}</button>
+              <button type="button" class="btn btn-outline-secondary"><img src="{% static "svg/arrow-down.svg" %}" alt="down-vote"/></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-8 question-text">
+        <div class="question-title">
+          <h2><a href="{% url 'question' question.id %}" class="link link-opacity-75-hover">{{ question.title }}</a></h2>
+        </div>
+        <div>
+          <p class="text-muted">
+            {{ question.body }}
+          </p>
+        </div>
+        <div class="question-links">
+          <div class="row align-items-baseline">
+            <div class="col-3">
+              <p class="text-muted">
+                <a id="question-1-answers-link" href="{% url 'question' question.id %}">Answer ({{ question.answer_set.count }})</a>
+              </p>
+            </div>
+            <div class="col-9">
+              <div class="row  align-items-baseline">
+                <div class="col-2">
+                  <p class="text-muted">Tags: </p>
+                </div>
+                <div class="col-10">
+                  <ul class="list-group list-group-horizontal">
+                    {% for tag in question.tags.all %}
+                      <li class="list-group-item">
+                        <a href="{% url "by_tag" tag.title %}" class="text-muted">{{ tag.title }}</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   </div>
 
   <hr/>

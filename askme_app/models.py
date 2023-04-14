@@ -11,11 +11,11 @@ from django.contrib.contenttypes.models import ContentType
 class Vote(models.Model):
     rate = models.IntegerField(default=0)
 
-    # Полиморфная ассоциация, может относиться как к Question, так и к Answer
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
 
+    # TODO: Добавить уникальность по 3 полям
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, default="")
 
@@ -44,6 +44,9 @@ class QuestionManager(models.Manager):
 
     def sorted_by_created_at(self):
         return self.order_by('-created_at')
+
+    def filter_by_tag(self, tag_title):
+        return self.filter(tags__title=tag_title)
 
 
 class Question(models.Model):

@@ -7,7 +7,7 @@ from askme_app.models import Question, Tag, Answer
 # Create your views here.
 
 def index(request):
-    context = {'questions': Question.objects.sorted_by_created_at(),
+    context = {'questions': Question.objects.sorted_by_created_at()[:10],
                'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
                }
 
@@ -23,7 +23,7 @@ def show_question(request, question_id):
 
 
 def hot(request):
-    context = {'questions': Question.objects.sorted_by_rating(),
+    context = {'questions': Question.objects.sorted_by_rating()[:10],
                'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
                }
 
@@ -45,7 +45,16 @@ def new_question(request):
 
 
 def show_by_tag(request, title):
-    tag = Tag.objects.get(title=title)
-    return render(request, 'show_tag.html')
+    context = {'tag': Tag.objects.get(title=title),
+               'questions': Question.objects.filter_by_tag(title)[:10],
+               'global_tags': Tag.objects.sort_by_related_question_quantity()[:10]
+               }
+    return render(request, 'show_tag.html', context)
 
-# TODO: Pagination
+
+def paginate(objects_list, request, per_page=10):
+    ...
+    # TODO: Pagination, routing
+    # do smth with Paginator, etc…
+    # return page
+    #

@@ -1,14 +1,10 @@
 import random
 
-import mimesis.types
 from django.core.management.base import BaseCommand
 from mimesis import Person
 from mimesis.locales import Locale
-from django.utils import timezone
-from askme_app.models import Question, Tag, Vote, Answer, Profile
+from askme_app.models import Question, Tag, Vote, Answer
 from django.contrib.auth.models import User
-from mimesis import Datetime
-from mimesis.random import Random
 from mimesis import Text
 from django.db.utils import IntegrityError
 
@@ -22,7 +18,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         ratio = kwargs['ratio']
 
-        # 5+ часа кайфа при ratio=10_000
+        # 10+ часов кайфа при ratio=10_000
         _fill_users(ratio)
         _fill_tags(ratio)
         _fill_questions(ratio * 10)
