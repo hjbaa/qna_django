@@ -17,9 +17,11 @@ def index(request):
 
 
 def show_question(request, question_id):
+    page_obj = paginate(Answer.objects.filter(question_id=question_id), request, 3)
+
     context = {'question': Question.objects.get(pk=question_id),
                'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
-               'answers': Answer.objects.filter(question_id=question_id)
+               'page_obj': page_obj,
                }
     return render(request, 'show_question.html', context)
 

@@ -67,11 +67,16 @@
   <hr/>
   <h2 class="mb-3">Answers:</h2>
 
-  {% for answer in answers %}
+  {% for answer in page_obj %}
     {% block answer %}
       {% include 'include/answer_item.html' with answer=answer %}
     {% endblock %}
   {% endfor %}
+
+  {% block pagination %}
+    {% include 'include/pagination.html' with page_obj=page_obj %}
+  {% endblock %}
+
   <hr class="mt-3 mb-4">
   <div>
       <form>
