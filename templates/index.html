@@ -10,33 +10,17 @@
         <h2><a href="{% url 'hot_questions' %}">Hot questions</a></h2>
       </li>
     </ul>
-
-    <div class="page-pagination">
-      <nav aria-label="Page navigation example">
-        <ul class="pagination">
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          <li class="page-item"><a class="page-link" href="123">1</a></li>
-          <li class="page-item"><a class="page-link" href="123">2</a></li>
-          <li class="page-item"><a class="page-link" href="123">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
 {% endblock %}
 
 
 {% block left-column %}
-  {% for question in questions %}
+  {% for question in page_obj %}
     {% block question %}
       {% include 'include/question_item.html' with question=question %}
     {% endblock %}
   {% endfor %}
+
+  {% block paginator %}
+      {% include 'include/pagination.html' with page_obj=page_obj %}
+  {% endblock %}
 {% endblock %}

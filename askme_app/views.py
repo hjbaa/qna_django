@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.core.paginator import Paginator
 from django.shortcuts import render
 
 from askme_app.models import Question, Tag, Answer
@@ -7,7 +7,9 @@ from askme_app.models import Question, Tag, Answer
 # Create your views here.
 
 def index(request):
-    context = {'questions': Question.objects.sorted_by_created_at()[:10],
+    page_obj = paginate(Question.objects.sorted_by_created_at(), request)
+
+    context = {'page_obj': page_obj,
                'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
                }
 
@@ -23,7 +25,8 @@ def show_question(request, question_id):
 
 
 def hot(request):
-    context = {'questions': Question.objects.sorted_by_rating()[:10],
+    page_obj = paginate(Question.objects.sorted_by_rating(), request)
+    context = {'page_obj': page_obj,
                'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
                }
 
@@ -45,16 +48,18 @@ def new_question(request):
 
 
 def show_by_tag(request, title):
+    page_obj = paginate(Question.objects.filter_by_tag(title), request)
+
     context = {'tag': Tag.objects.get(title=title),
-               'questions': Question.objects.filter_by_tag(title)[:10],
+               'page_obj': page_obj,
                'global_tags': Tag.objects.sort_by_related_question_quantity()[:10]
                }
     return render(request, 'show_tag.html', context)
 
 
 def paginate(objects_list, request, per_page=10):
-    ...
-    # TODO: Pagination, routing
-    # do smth with Paginator, etc…
-    # return page
-    #
+    paginator = Paginator(objects_list, per_page)
+
+    page_number = request.GET.get('page', 1)
+
+    return paginator.get_page(page_number)
