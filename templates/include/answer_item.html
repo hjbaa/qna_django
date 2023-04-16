@@ -1,0 +1,36 @@
+{% block answer %}
+{% load static %}
+
+  <div class="answer mb-4">
+    <div class="row">
+      <div class="col-3">
+        <div class="answer-avatar mb-3">
+          <img src="{% static "img/otto-removebg-preview.png" %}" alt="user-avatar"/>
+        </div>
+        <div class="d-flex ps-3 pt-2">
+          <div class="answer-rating">
+            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+              <button type="button" class="btn btn-outline-secondary"><img src="{% static "svg/arrow-up.svg" %}" alt="down-vote"/></button>
+              <button type="button" class="btn btn-outline-secondary disabled">{{ answer.get_rating }}</button>
+              <button type="button" class="btn btn-outline-secondary"><img src="{% static "svg/arrow-down.svg" %}" alt="down-vote"/></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-8 question-text">
+        <div class="answer-content">
+          <p class="text-muted">
+            {{ answer.body }}
+          </p>
+        </div>
+        <div class="answer-links">
+          <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" value="">
+              <label class="form-check-label" for="">Correct</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

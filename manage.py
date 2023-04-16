@@ -4,6 +4,7 @@ import os
 import sys
 
 
+# TODO: Management Command
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'askme_django.settings')

@@ -1,0 +1,46 @@
+{% extends 'include/base_with_right_column.html' %}
+{% load static %}
+
+{% block content-header %}
+    <ul class="list-group list-group-horizontal mt-5 align-items-baseline mb-4">
+        <li class="list-group-item border-0 px-0">
+            <h1>New question</h1>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block left-column %}
+    <form id="new-question-form">
+        <div class="row mb-2">
+            <div class="col-2">
+                <label for="new-question-title" class="form-label fs-3">Title</label>
+            </div>
+
+            <div class="col-10">
+                <input type="text" id="new-question-title" class="form-control"/>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-2">
+                <label for="new-question-body" class="form-label fs-3">Body</label>
+            </div>
+
+            <div class="col-10">
+                <textarea id="new-question-body" class="form-control"></textarea>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-2">
+                <label for="new-question-tags" class="form-label fs-3">Tags</label>
+            </div>
+
+            <div class="col-10">
+                <input type="text" id="new-question-tags" class="form-control"/>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-outline-primary">Submit</button>
+    </form>
+{% endblock %}

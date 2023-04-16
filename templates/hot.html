@@ -1,0 +1,25 @@
+{% extends "include/base_with_right_column.html" %}
+{% load static %}
+
+{% block content-header %}
+  <ul class="list-group list-group-horizontal mt-5 align-items-baseline mb-4">
+    <li class="list-group-item border-0 px-0">
+      <h2><a href="{% url 'index' %}">All questions</a></h2>
+    </li>
+    <li class="list-group-item border-0 px-4">
+      <h1>Hot questions</h1>
+    </li>
+  </ul>
+{% endblock %}
+
+{% block left-column %}
+  {% for question in page_obj %}
+    {% block question %}
+      {% include 'include/question_item.html' with question=question %}
+    {% endblock %}
+  {% endfor %}
+
+  {% block paginator %}
+      {% include 'include/pagination.html' with page_obj=page_obj %}
+  {% endblock %}
+{% endblock %}
