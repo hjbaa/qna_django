@@ -7,5 +7,3 @@ urlpatterns = [
     path('hot/', views.hot, name="hot_questions"),
     path('ask/', views.new_question, name='ask_question'),
 ]
-
-# вынести юрлы в приложение
