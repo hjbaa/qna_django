@@ -2,7 +2,7 @@
 FROM python:3.10.10-alpine
 
 # set work directory
-WORKDIR /usr/src/app
+WORKDIR /askme
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -20,6 +20,6 @@ RUN pip install -r requirements.txt
 # copy entrypoint.sh
 COPY ./entrypoint.sh .
 # copy project
-ADD . .
+
 # run entrypoint.sh
-ENTRYPOINT ["/code/entrypoint.sh"]
+ENTRYPOINT ["/askme/entrypoint.sh"]
