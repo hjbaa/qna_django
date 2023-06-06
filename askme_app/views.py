@@ -1,5 +1,6 @@
+from django.contrib.auth import login, authenticate
 from django.core.paginator import Paginator
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from askme_app.models import Question, Tag, Answer
 
@@ -36,7 +37,18 @@ def hot(request):
 
 
 def log_in(request):
-    return render(request, 'login.html')
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            error_message = 'Wrong username or password!'
+            return render(request, 'login.html', {'error_message': error_message})
+    else:
+        return render(request, 'login.html')
 
 
 def sign_up(request):
