@@ -38,12 +38,17 @@ def hot(request):
 
 def log_in(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
+        if not request.POST.get('csrfmiddlewaretoken'):
+            error_message = 'Ошибка валидации формы. Попробуйте еще раз.'
+            return render(request, 'login.html', {'error_message': error_message})
+
+        email = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
+
+        user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect('index')
         else:
             error_message = 'Wrong username or password!'
             return render(request, 'login.html', {'error_message': error_message})
