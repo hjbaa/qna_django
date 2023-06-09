@@ -5,61 +5,62 @@
   <div class="container" id="signup-block">
     <!-- Pills navs -->
     <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" id="tab-login" data-mdb-toggle="pill" href="{% url 'login' %}" role="tab"
-               aria-controls="pills-login" aria-selected="true">Login</a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="tab-register" data-mdb-toggle="pill" href="{% url 'sign_up' %}" role="tab"
-               aria-controls="pills-register" aria-selected="false">Register</a>
-        </li>
+      <li class="nav-item" role="presentation">
+          <a class="nav-link" id="tab-login" data-mdb-toggle="pill" href="{% url 'login' %}" role="tab"
+             aria-controls="pills-login" aria-selected="true">Login</a>
+      </li>
+      <li class="nav-item" role="presentation">
+          <a class="nav-link active" id="tab-register" data-mdb-toggle="pill" href="{% url 'sign_up' %}" role="tab"
+             aria-controls="pills-register" aria-selected="false">Register</a>
+      </li>
     </ul>
     <!-- Pills navs -->
 
     <div class="alert alert-danger" id="errors">
-        There are 2 mistakes
+      There are 2 mistakes
     </div>
 
     <!-- Pills content -->
     <div class="tab-content">
-        <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            <form>
-                <div class="form-outline mb-2">
-                    <input type="text" id="signup-login" class="form-control" />
-                    <label class="form-label" for="signup-login">Login/Username</label>
-                </div>
+      <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+        <form method="post" action="{% url 'sign_up' %}" enctype="multipart/form-data">
+          {{ csrf_token }}
+          <div class="form-outline mb-2">
+            <input type="text" id="signup-login" class="form-control" />
+            <label class="form-label" for="signup-login">Login/Username</label>
+          </div>
 
-                <!-- Email input -->
-                <div class="form-outline mb-2">
-                    <input type="email" id="signup-email" class="form-control" />
-                    <label class="form-label" for="signup-email">Email</label>
-                </div>
+          <!-- Email input -->
+          <div class="form-outline mb-2">
+            <input type="email" id="signup-email" class="form-control" />
+            <label class="form-label" for="signup-email">Email</label>
+          </div>
 
-                <!-- Password input -->
-                <div class="form-outline mb-2">
-                    <input type="password" id="signup-password" class="form-control" />
-                    <label class="form-label" for="signup-password">Password</label>
-                </div>
+          <!-- Password input -->
+          <div class="form-outline mb-2">
+            <input type="password" id="signup-password" class="form-control" />
+            <label class="form-label" for="signup-password">Password</label>
+          </div>
 
-                <div class="form-outline mb-2">
-                    <input type="password" id="repeat-password" class="form-control" />
-                    <label class="form-label" for="repeat-password">Repeat password</label>
-                </div>
+          <div class="form-outline mb-2">
+            <input type="password" id="repeat-password" class="form-control" />
+            <label class="form-label" for="repeat-password">Repeat password</label>
+          </div>
 
-                <div class="form-outline mb-4">
-                    <input class="form-control" type="file" id="signup-avatar">
-                    <label class="form-label" for="signup-avatar">Avatar</label>
-                </div>
+          <div class="form-outline mb-4">
+            <input class="form-control" type="file" id="signup-avatar">
+            <label class="form-label" for="signup-avatar">Avatar</label>
+          </div>
 
-                <!-- Submit button -->
-                <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>
+          <!-- Submit button -->
+          <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>
 
-                <!-- Register buttons -->
-                <div class="text-center">
-                    <p>Already registered? <a href="{% url 'login' %}">Log in</a></p>
-                </div>
-            </form>
-        </div>
+          <!-- Register buttons -->
+          <div class="text-center">
+              <p>Already registered? <a href="{% url 'login' %}">Log in</a></p>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 {% endblock %}

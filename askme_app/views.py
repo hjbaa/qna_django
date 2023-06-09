@@ -1,11 +1,10 @@
 from django.contrib.auth import login, authenticate
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
-
+from django.views.decorators.csrf import csrf_protect
 from askme_app.models import Question, Tag, Answer
+from askme_app.forms import LoginForm
 
-
-# Create your views here.
 
 def index(request):
     page_obj = paginate(Question.objects.sorted_by_created_at(), request)
@@ -36,26 +35,48 @@ def hot(request):
     return render(request, 'hot.html', context)
 
 
+@csrf_protect
 def log_in(request):
+    login_form = None
+
     if request.method == 'POST':
-        if not request.POST.get('csrfmiddlewaretoken'):
-            error_message = 'Ошибка валидации формы. Попробуйте еще раз.'
-            return render(request, 'login.html', {'error_message': error_message})
+        login_form = LoginForm(request.POST)
+        if login_form.is_valid():
+            user = authenticate(request=request, **login_form.cleaned_data)
+            if user is not None:
+                login(request, user)
+                return redirect('index')
+            else:
+                error_message = 'Wrong username or password!'
+                login_form = LoginForm()
+                return render(request, 'login.html', {'error_message': error_message, 'form': login_form})
+    elif request.method == 'GET':
+        login_form = LoginForm()
 
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-
-        user = authenticate(request, email=email, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('index')
-        else:
-            error_message = 'Wrong username or password!'
-            return render(request, 'login.html', {'error_message': error_message})
-    else:
-        return render(request, 'login.html')
+    return render(request, 'login.html', context={'form': login_form})
 
 
+
+    # if request.method == 'POST':
+    #     if not request.POST.get('csrfmiddlewaretoken'):
+    #         error_message = 'Ошибка валидации формы. Попробуйте еще раз.'
+    #         return render(request, 'login.html', {'error_message': error_message})
+    #
+    #     email = request.POST.get('email')
+    #     password = request.POST.get('password')
+    #
+    #     user = authenticate(request, email=email, password=password)
+    #     if user is not None:
+    #         login(request, user)
+    #         return redirect('index')
+    #     else:
+    #         error_message = 'Wrong username or password!'
+    #         return render(request, 'login.html', {'error_message': error_message})
+    # else:
+    #     return render(request, 'login.html')
+
+
+@csrf_protect
 def sign_up(request):
     return render(request, 'signup.html')
 
