@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum, Count
@@ -87,8 +88,19 @@ class Answer(models.Model):
         return rating if rating is not None else 0
 
 
+class ProfileManager(models.Manager):
+    def get_profile_by_username(self, username):
+        try:
+            user = User.objects.get(username=username)
+        except ObjectDoesNotExist:
+            return None
+
+        return Profile.objects.get(user=user)
+
+
 class Profile(models.Model):
+    objects = ProfileManager()
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to=MEDIA_URL)
     created_at = models.DateTimeField(auto_now_add=True)
-    # author

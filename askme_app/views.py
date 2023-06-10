@@ -1,11 +1,14 @@
 from django.contrib.auth import login, authenticate
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_http_methods
+
 from askme_app.models import Question, Tag, Answer
 from askme_app.forms import LoginForm
 
 
+@require_http_methods('GET')
 def index(request):
     page_obj = paginate(Question.objects.sorted_by_created_at(), request)
 
@@ -16,6 +19,7 @@ def index(request):
     return render(request, 'index.html', context)
 
 
+@require_http_methods(['GET'])
 def show_question(request, question_id):
     page_obj = paginate(Answer.objects.filter(question_id=question_id), request, 3)
 
@@ -26,6 +30,7 @@ def show_question(request, question_id):
     return render(request, 'show_question.html', context)
 
 
+@require_http_methods(['GET'])
 def hot(request):
     page_obj = paginate(Question.objects.sorted_by_rating(), request)
     context = {'page_obj': page_obj,
@@ -36,57 +41,40 @@ def hot(request):
 
 
 @csrf_protect
+@require_http_methods(['GET', 'POST'])
 def log_in(request):
-    login_form = None
-
     if request.method == 'POST':
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
             user = authenticate(request=request, **login_form.cleaned_data)
-            if user is not None:
-                login(request, user)
-                return redirect('index')
-            else:
-                error_message = 'Wrong username or password!'
-                login_form = LoginForm()
-                return render(request, 'login.html', {'error_message': error_message, 'form': login_form})
-    elif request.method == 'GET':
+
+            login(request, user)
+            return redirect(reverse('index'))
+
+        else:
+            username_value = request.POST.get('username')
+            login_form = LoginForm(request.POST, initial={'username': username_value})
+            return render(request, 'login.html', {'form': login_form})
+    else:
         login_form = LoginForm()
 
     return render(request, 'login.html', context={'form': login_form})
 
 
-
-    # if request.method == 'POST':
-    #     if not request.POST.get('csrfmiddlewaretoken'):
-    #         error_message = 'Ошибка валидации формы. Попробуйте еще раз.'
-    #         return render(request, 'login.html', {'error_message': error_message})
-    #
-    #     email = request.POST.get('email')
-    #     password = request.POST.get('password')
-    #
-    #     user = authenticate(request, email=email, password=password)
-    #     if user is not None:
-    #         login(request, user)
-    #         return redirect('index')
-    #     else:
-    #         error_message = 'Wrong username or password!'
-    #         return render(request, 'login.html', {'error_message': error_message})
-    # else:
-    #     return render(request, 'login.html')
-
-
 @csrf_protect
+@require_http_methods(['GET', 'POST'])
 def sign_up(request):
     return render(request, 'signup.html')
 
 
+@require_http_methods(['GET', 'POST'])
 def new_question(request):
     context = {'global_tags': Tag.objects.sort_by_related_question_quantity()[:10]}
 
     return render(request, 'new_question.html', context)
 
 
+@require_http_methods(['GET'])
 def show_by_tag(request, title):
     page_obj = paginate(Question.objects.filter_by_tag(title), request)
 
