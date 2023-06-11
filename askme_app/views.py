@@ -1,3 +1,6 @@
+import os
+
+from django.contrib import auth
 from django.contrib.auth import login, authenticate
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, reverse
@@ -5,7 +8,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 
 from askme_app.models import Question, Tag, Answer
-from askme_app.forms import LoginForm
+from askme_app.forms import LoginForm, SignupForm
+from askme_django.settings import MEDIA_ROOT
 
 
 @require_http_methods('GET')
@@ -64,7 +68,20 @@ def log_in(request):
 @csrf_protect
 @require_http_methods(['GET', 'POST'])
 def sign_up(request):
-    return render(request, 'signup.html')
+    if request.method == 'POST':
+        form = SignupForm(request.POST, request.FILES)
+        if form.is_valid():
+            user, profile = form.save()
+
+            authenticated_user = authenticate(request=request,
+                                              username=user.username,
+                                              password=form.cleaned_data['password'])
+            login(request, authenticated_user)
+            return redirect('index')
+    else:
+        form = SignupForm()
+
+    return render(request, 'signup.html', {'form': form})
 
 
 @require_http_methods(['GET', 'POST'])
@@ -83,6 +100,13 @@ def show_by_tag(request, title):
                'global_tags': Tag.objects.sort_by_related_question_quantity()[:10]
                }
     return render(request, 'show_tag.html', context)
+
+
+@csrf_protect
+@require_http_methods(['POST'])
+def log_out(request):
+    auth.logout(request)
+    return redirect(reverse('index'))
 
 
 def paginate(objects_list, request, per_page=10):

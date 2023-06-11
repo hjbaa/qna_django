@@ -16,41 +16,30 @@
     </ul>
     <!-- Pills navs -->
 
-    <div class="alert alert-danger" id="errors">
-      There are 2 mistakes
-    </div>
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger" id="errors">
+        {% for error in form.non_field_errors %}
+          <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
 
     <!-- Pills content -->
     <div class="tab-content">
       <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
         <form method="post" action="{% url 'sign_up' %}" enctype="multipart/form-data">
-          {{ csrf_token }}
-          <div class="form-outline mb-2">
-            <input type="text" id="signup-login" class="form-control" />
-            <label class="form-label" for="signup-login">Login/Username</label>
-          </div>
+          {% csrf_token %}
 
-          <!-- Email input -->
-          <div class="form-outline mb-2">
-            <input type="email" id="signup-email" class="form-control" />
-            <label class="form-label" for="signup-email">Email</label>
-          </div>
+          {% for field in form %}
+            <div class="text-danger">
+              {{ field.errors }}
+            </div>
 
-          <!-- Password input -->
-          <div class="form-outline mb-2">
-            <input type="password" id="signup-password" class="form-control" />
-            <label class="form-label" for="signup-password">Password</label>
-          </div>
-
-          <div class="form-outline mb-2">
-            <input type="password" id="repeat-password" class="form-control" />
-            <label class="form-label" for="repeat-password">Repeat password</label>
-          </div>
-
-          <div class="form-outline mb-4">
-            <input class="form-control" type="file" id="signup-avatar">
-            <label class="form-label" for="signup-avatar">Avatar</label>
-          </div>
+            <div class="form-outline mb-4">
+              {{ field }}
+              {{ field.label_tag }}
+            </div>
+          {% endfor %}
 
           <!-- Submit button -->
           <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>

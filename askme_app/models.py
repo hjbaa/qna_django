@@ -97,10 +97,18 @@ class ProfileManager(models.Manager):
 
         return Profile.objects.get(user=user)
 
+    def get_profile_by_email(self, email):
+        try:
+            user = User.objects.get(email=email)
+        except ObjectDoesNotExist:
+            return None
+
+        return Profile.objects.get(user=user)
+
 
 class Profile(models.Model):
     objects = ProfileManager()
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to=MEDIA_URL)
+    avatar = models.ImageField(upload_to='avatars', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

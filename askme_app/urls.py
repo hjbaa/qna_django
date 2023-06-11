@@ -6,4 +6,5 @@ urlpatterns = [
     path('tag/<str:title>', views.show_by_tag, name="by_tag"),
     path('hot/', views.hot, name="hot_questions"),
     path('ask/', views.new_question, name='ask_question'),
+    path('logout/', views.log_out, name='log_out')
 ]

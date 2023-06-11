@@ -33,14 +33,43 @@
           <button type="button" class="btn btn-outline-secondary" id="input-group-button-right">Search</button>
         </div>
       </form>
-      <ul class="navbar-nav mb-2 mb-md-0">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'login' %}">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'sign_up' %}">Sign up</a>
-        </li>
-      </ul>
+
+      {% if request.user.is_authenticated %}
+        <div class="d-flex align-items-center">
+          <div class="mr-2">
+            <div class="text-center">
+              <p class="text-white h4">{{ request.user.username }}</p>
+            </div>
+            <div>
+              <ul class="navbar-nav ml-2">
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Settings</a>
+                </li>
+                <li class="nav-item">
+                  <form action="{% url 'log_out' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link">Log out</button>
+                  </form>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="m-2">
+            <img src="../../static/img/ava.png" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px;">
+          </div>
+        </div>
+      {% else %}
+
+        <ul class="navbar-nav mb-2 mb-md-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'sign_up' %}">Sign up</a>
+          </li>
+        </ul>
+      {% endif %}
+
     </div>
   </nav>
 </header>
