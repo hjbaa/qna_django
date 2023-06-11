@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 
 from askme_app.models import Question, Tag, Answer
-from askme_app.forms import LoginForm, SignupForm, NewQuestionForm
+from askme_app.forms import LoginForm, SignupForm, NewQuestionForm, NewAnswerForm
 
 
 @require_http_methods('GET')
@@ -25,14 +25,26 @@ def index(request):
 @csrf_protect
 @require_http_methods(['GET', 'POST'])
 def show_question(request, question_id):
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        answer_form = NewAnswerForm(request.POST)
+        if answer_form.is_valid():
+            answer = answer_form.save(request.user, question_id)
+            return redirect('question', question_id=question_id)
+    else:
+        answer_form = NewAnswerForm()
+
     page_obj = paginate(Answer.objects.sorted_by_rating(question_id), request, 3)
 
-    context = {'question': Question.objects.get(pk=question_id),
-               'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
-               'page_obj': page_obj,
-               }
+    context = {
+        'question': Question.objects.get(pk=question_id),
+        'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
+        'page_obj': page_obj,
+        'form': answer_form,
+    }
     return render(request, 'show_question.html', context)
-
 
 @require_http_methods(['GET'])
 def hot(request):

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
-from .models import Profile, Tag, Question
+from .models import Profile, Tag, Question, Answer
 
 
 class LoginForm(forms.Form):
@@ -155,8 +155,14 @@ class NewAnswerForm(forms.Form):
 
     body = forms.CharField(
         required=True,
-        widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Type your answer here'})
+        widget=forms.Textarea(attrs={'class': 'form-control mb-4', 'placeholder': 'Type your answer here'})
     )
 
-    def save(self):
-        ...
+    def save(self, user, question_id):
+        body = self.cleaned_data['body']  # Получаем текст ответа из cleaned_data
+        question = Question.objects.get(pk=question_id)  # Получаем объект вопроса по его идентификатору
+
+        answer = Answer(body=body, question=question, author=user)
+        answer.save()  # Сохраняем новый ответ в базу данных
+
+        return answer
