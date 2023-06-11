@@ -1,15 +1,13 @@
-import os
-
 from django.contrib import auth
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, reverse
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 
 from askme_app.models import Question, Tag, Answer
-from askme_app.forms import LoginForm, SignupForm
-from askme_django.settings import MEDIA_ROOT
+from askme_app.forms import LoginForm, SignupForm, NewQuestionForm
 
 
 @require_http_methods('GET')
@@ -84,10 +82,21 @@ def sign_up(request):
     return render(request, 'signup.html', {'form': form})
 
 
+@csrf_protect
+@login_required(login_url="login", redirect_field_name="continue")
 @require_http_methods(['GET', 'POST'])
 def new_question(request):
-    context = {'global_tags': Tag.objects.sort_by_related_question_quantity()[:10]}
+    if request.method == 'POST':
+        form = NewQuestionForm(request.POST)
+        if form.is_valid():
+            # Обработка сохранения формы
+            question = form.save(request.user)
+            # Дополнительные действия после сохранения формы
+            return redirect('question', question_id=question.id)
+    else:
+        form = NewQuestionForm()
 
+    context = {'form': form, 'global_tags': Tag.objects.sort_by_related_question_quantity()[:10]}
     return render(request, 'new_question.html', context)
 
 

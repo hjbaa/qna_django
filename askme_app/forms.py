@@ -1,11 +1,12 @@
 import os
+import profile
 
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
-from .models import Profile
+from .models import Profile, Tag, Question
 
 
 class LoginForm(forms.Form):
@@ -106,3 +107,42 @@ class SignupForm(forms.Form):
         profile = Profile.objects.create(user=user, avatar=avatar)
 
         return user, profile
+
+
+class NewQuestionForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
+    title = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        label='Title'
+    )
+
+    body = forms.CharField(
+        required=True,
+        widget=forms.Textarea(attrs={'class': 'form-control'}),
+        label='Body'
+    )
+
+    tags = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter tags separated by commas'}),
+        label='Tags'
+    )
+
+    def save(self, user):
+        super().clean()
+        question = Question.objects.create(
+            title=self.cleaned_data['title'],
+            body=self.cleaned_data['body'],
+            author=user
+        )
+        tags = self.cleaned_data.get('tags')
+        tag_list = [tag.strip() for tag in tags.split(',') if tag.strip()]
+
+        for tag_name in tag_list:
+            tag, created = Tag.objects.get_or_create(title=tag_name)
+            question.tags.add(tag)
+        return question

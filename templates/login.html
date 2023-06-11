@@ -30,6 +30,10 @@
         <form method="post" action="{% url 'login' %}" enctype="multipart/form-data">
           {% csrf_token %}
           {% for field in form %}
+            <div class="text-danger">
+              {{ field.errors }}
+            </div>
+
             <div class="form-outline mb-4">
               {{ field }}
               {{ field.label_tag }}
