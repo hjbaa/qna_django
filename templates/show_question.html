@@ -85,6 +85,9 @@
   <div>
     <form action="{% url 'question' question_id=question.id %}" method="post" enctype="multipart/form-data" id="new-answer">
       {% csrf_token %}
+      <div class="text-danger">
+        {{ form.body.errors }}
+      </div>
 
       {{ form.body }}
 
