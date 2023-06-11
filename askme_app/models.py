@@ -110,5 +110,5 @@ class Profile(models.Model):
     objects = ProfileManager()
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='avatars', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars', null=False, blank=False, default='no-profile-picture-icon.png')
     created_at = models.DateTimeField(auto_now_add=True)
