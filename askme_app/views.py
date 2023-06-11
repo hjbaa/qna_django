@@ -46,6 +46,7 @@ def show_question(request, question_id):
     }
     return render(request, 'show_question.html', context)
 
+
 @require_http_methods(['GET'])
 def hot(request):
     page_obj = paginate(Question.objects.sorted_by_rating(), request)
@@ -59,13 +60,16 @@ def hot(request):
 @csrf_protect
 @require_http_methods(['GET', 'POST'])
 def log_in(request):
+    cont = request.GET.get('continue')
+
     if request.method == 'POST':
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
             user = authenticate(request=request, **login_form.cleaned_data)
 
             login(request, user)
-            return redirect(reverse('index'))
+            cont = request.POST.get("continue", None)
+            return redirect(cont if cont and cont != "None" else reverse('index'))
 
         else:
             username_value = request.POST.get('username')
@@ -74,7 +78,7 @@ def log_in(request):
     else:
         login_form = LoginForm()
 
-    return render(request, 'login.html', context={'form': login_form})
+    return render(request, 'login.html', context={'form': login_form, 'continue': cont})
 
 
 @csrf_protect
@@ -126,6 +130,7 @@ def show_by_tag(request, title):
 
 
 @csrf_protect
+@login_required(login_url="login", redirect_field_name="continue")
 @require_http_methods(['POST'])
 def log_out(request):
     auth.logout(request)
