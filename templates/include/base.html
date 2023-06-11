@@ -55,7 +55,7 @@
             </div>
           </div>
           <div class="m-2">
-            <img src="../../static/img/ava.png" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px;">
+            <img src="{{ request.user.profile.avatar.url   }}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px;">
           </div>
         </div>
       {% else %}
