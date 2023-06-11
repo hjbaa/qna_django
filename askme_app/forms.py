@@ -146,3 +146,17 @@ class NewQuestionForm(forms.Form):
             tag, created = Tag.objects.get_or_create(title=tag_name)
             question.tags.add(tag)
         return question
+
+
+class NewAnswerForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
+    body = forms.CharField(
+        required=True,
+        widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Type your answer here'})
+    )
+
+    def save(self):
+        ...

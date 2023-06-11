@@ -2,6 +2,7 @@ from django.contrib import auth
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Sum
 from django.shortcuts import render, redirect, reverse
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
@@ -21,9 +22,10 @@ def index(request):
     return render(request, 'index.html', context)
 
 
-@require_http_methods(['GET'])
+@csrf_protect
+@require_http_methods(['GET', 'POST'])
 def show_question(request, question_id):
-    page_obj = paginate(Answer.objects.filter(question_id=question_id), request, 3)
+    page_obj = paginate(Answer.objects.sorted_by_rating(question_id), request, 3)
 
     context = {'question': Question.objects.get(pk=question_id),
                'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],

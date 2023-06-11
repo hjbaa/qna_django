@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum, Count
+from django.db.models.functions import Coalesce
 
 from askme_django.settings import MEDIA_URL
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -42,7 +43,7 @@ class Tag(models.Model):
 
 class QuestionManager(models.Manager):
     def sorted_by_rating(self):
-        return self.annotate(total_votes=Sum('votes__rate')).order_by('-total_votes')
+        return self.annotate(rating=Coalesce(Sum('votes__rate'), 0)).order_by('-rating')
 
     def sorted_by_created_at(self):
         return self.order_by('-created_at')
@@ -72,6 +73,13 @@ class Question(models.Model):
         return Count(Answer.objects.filter(question_id=self.id))
 
 
+class AnswerManager(models.Manager):
+    def sorted_by_rating(self, question_id):
+        return self.filter(question_id=question_id)\
+                   .annotate(rating=Coalesce(Sum('votes__rate'), 0))\
+                   .order_by('-rating')
+
+
 class Answer(models.Model):
     body = models.TextField()
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -80,8 +88,10 @@ class Answer(models.Model):
     is_correct = models.BooleanField(default=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE, default="")
 
+    objects = AnswerManager()
+
     def __str__(self):
-        return f"question_id: {self.question_id};\t votes: {self.votes}"
+        return f"id: {self.id};\tquestion_id: {self.question_id}"
 
     def get_rating(self):
         rating = self.votes.aggregate(Sum('rate'))['rate__sum']
