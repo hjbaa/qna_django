@@ -32,7 +32,9 @@ def show_question(request, question_id):
         answer_form = NewAnswerForm(request.POST)
         if answer_form.is_valid():
             answer = answer_form.save(request.user, question_id)
-            return redirect('question', question_id=question_id)
+            answer_index = list(Answer.objects.sorted_by_rating(question_id)).index(answer)
+            page_number = answer_index // 3 + 1
+            return redirect(reverse('question', args=[question_id]) + f"?page={page_number}")
     else:
         answer_form = NewAnswerForm()
 
