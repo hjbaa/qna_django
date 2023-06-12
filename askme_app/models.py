@@ -1,6 +1,8 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum, Count
+from django.db.models.functions import Coalesce
 
 from askme_django.settings import MEDIA_URL
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -41,7 +43,7 @@ class Tag(models.Model):
 
 class QuestionManager(models.Manager):
     def sorted_by_rating(self):
-        return self.annotate(total_votes=Sum('votes__rate')).order_by('-total_votes')
+        return self.annotate(rating=Coalesce(Sum('votes__rate'), 0)).order_by('-rating')
 
     def sorted_by_created_at(self):
         return self.order_by('-created_at')
@@ -71,6 +73,13 @@ class Question(models.Model):
         return Count(Answer.objects.filter(question_id=self.id))
 
 
+class AnswerManager(models.Manager):
+    def sorted_by_rating(self, question_id):
+        return self.filter(question_id=question_id)\
+                   .annotate(rating=Coalesce(Sum('votes__rate'), 0))\
+                   .order_by('-rating')
+
+
 class Answer(models.Model):
     body = models.TextField()
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -79,16 +88,37 @@ class Answer(models.Model):
     is_correct = models.BooleanField(default=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE, default="")
 
+    objects = AnswerManager()
+
     def __str__(self):
-        return f"question_id: {self.question_id};\t votes: {self.votes}"
+        return f"id: {self.id};\tquestion_id: {self.question_id}"
 
     def get_rating(self):
         rating = self.votes.aggregate(Sum('rate'))['rate__sum']
         return rating if rating is not None else 0
 
 
+class ProfileManager(models.Manager):
+    def get_profile_by_username(self, username):
+        try:
+            user = User.objects.get(username=username)
+        except ObjectDoesNotExist:
+            return None
+
+        return Profile.objects.get(user=user)
+
+    def get_profile_by_email(self, email):
+        try:
+            user = User.objects.get(email=email)
+        except ObjectDoesNotExist:
+            return None
+
+        return Profile.objects.get(user=user)
+
+
 class Profile(models.Model):
+    objects = ProfileManager()
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to=MEDIA_URL)
+    avatar = models.ImageField(upload_to='avatars', null=False, blank=False, default='no-profile-picture-icon.png')
     created_at = models.DateTimeField(auto_now_add=True)
-    # author

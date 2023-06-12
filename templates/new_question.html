@@ -10,36 +10,24 @@
 {% endblock %}
 
 {% block left-column %}
-    <form id="new-question-form">
-        <div class="row mb-2">
+    <form id="new-question-form" action="{% url 'ask_question' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% for field in form %}
+          <div class="text-danger">
+            {{ field.errors }}
+          </div>
+
+          <div class="row mb-3">
             <div class="col-2">
-                <label for="new-question-title" class="form-label fs-3">Title</label>
+                <label for="{{ field.auto_id }}" class="form-label fs-3">{{ field.label }}</label>
             </div>
 
             <div class="col-10">
-                <input type="text" id="new-question-title" class="form-control"/>
+              {{ field }}
             </div>
         </div>
-
-        <div class="row mb-4">
-            <div class="col-2">
-                <label for="new-question-body" class="form-label fs-3">Body</label>
-            </div>
-
-            <div class="col-10">
-                <textarea id="new-question-body" class="form-control"></textarea>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-2">
-                <label for="new-question-tags" class="form-label fs-3">Tags</label>
-            </div>
-
-            <div class="col-10">
-                <input type="text" id="new-question-tags" class="form-control"/>
-            </div>
-        </div>
+        {% endfor %}
 
         <button type="submit" class="btn btn-outline-primary">Submit</button>
     </form>
