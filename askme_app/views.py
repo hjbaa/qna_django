@@ -138,6 +138,13 @@ def log_out(request):
     return redirect(reverse('index'))
 
 
+@csrf_protect
+@login_required(login_url="login")
+@require_http_methods(['POST', 'DELETE'])
+def vote(request, votable_id, votable_type):
+    ...
+
+
 def paginate(objects_list, request, per_page=10):
     paginator = Paginator(objects_list, per_page)
 
