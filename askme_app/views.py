@@ -2,7 +2,6 @@ from django.contrib import auth
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Sum
 from django.shortcuts import render, redirect, reverse
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
