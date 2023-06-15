@@ -41,7 +41,7 @@ def _fill_users(ratio):
 
             u.save()
 
-            p = Profile(user = u)
+            p = Profile(user=u)
             p.save()
         except IntegrityError:
             continue

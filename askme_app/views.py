@@ -1,4 +1,4 @@
-from django.contrib import auth
+from django.contrib import auth, messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 
 from askme_app.models import Question, Tag, Answer
-from askme_app.forms import LoginForm, SignupForm, NewQuestionForm, NewAnswerForm
+from askme_app.forms import LoginForm, SignupForm, NewQuestionForm, NewAnswerForm, SettingsForm
 
 
 @require_http_methods('GET')
@@ -108,9 +108,7 @@ def new_question(request):
     if request.method == 'POST':
         form = NewQuestionForm(request.POST)
         if form.is_valid():
-            # Обработка сохранения формы
             question = form.save(request.user)
-            # Дополнительные действия после сохранения формы
             return redirect('question', question_id=question.id)
     else:
         form = NewQuestionForm()
@@ -143,6 +141,42 @@ def log_out(request):
 @require_http_methods(['POST', 'DELETE'])
 def vote(request, votable_id, votable_type):
     ...
+
+
+@csrf_protect
+@login_required(login_url="login", redirect_field_name="continue")
+@require_http_methods(['GET', 'POST'])
+def settings(request):
+    user = request.user
+
+    if request.method == 'POST':
+        form = SettingsForm(user, request.POST, request.FILES)
+        if form.is_valid():
+            u = form.save()
+            data = {
+                'username': u.username,
+                'password': u.password
+            }
+            login_form = LoginForm(data)
+            login_form.is_valid()
+
+            authenticated_user = auth.authenticate(request=request, **login_form.cleaned_data)
+            auth.login(request, authenticated_user)
+            messages.success(request, 'Your account successfully updated')
+            return redirect(reverse('settings'))
+    else:
+        initial_data = {
+            'username': user.username,
+            'email': user.email,
+        }
+        form = SettingsForm(user, initial=initial_data)
+
+    context = {
+        'form': form,
+        'global_tags': Tag.objects.sort_by_related_question_quantity()[:10]
+    }
+
+    return render(request, 'settings.html', context)
 
 
 def paginate(objects_list, request, per_page=10):

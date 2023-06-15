@@ -109,6 +109,112 @@ class SignupForm(forms.Form):
         return user, profile
 
 
+class SettingsForm(forms.Form):
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+        self.label_suffix = ""
+
+    username = forms.CharField(
+        required=False,
+        disabled=True,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        label='Username'
+    )
+
+    email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(attrs={'class': 'form-control'}),
+        label='Email'
+    )
+
+    old_password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': "Leave blank if you don't change your password"
+        }),
+        label='Old password'
+    )
+
+    new_password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label='New password'
+    )
+
+    new_repeat_password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label='Repeat password'
+    )
+
+    avatar = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={'class': 'form-control'}),
+        label='Avatar'
+    )
+
+    def clean_username(self):
+        return self.user.username
+
+    def clean_old_password(self):
+        return self.cleaned_data.get('new_repeat_password')
+
+    def clean_old_password(self):
+        old_password = self.cleaned_data['old_password']
+
+        if old_password and not self.user.check_password(old_password):
+            self.add_error('old_password', ValidationError("Your old password is incorrect", code='invalid'))
+
+        return old_password
+
+    def clean_email(self):
+        super().clean()
+        email = self.cleaned_data.get('email')
+
+        if email and User.objects.filter(email=email).exclude(username=self.user.username).exists():
+            self.add_error('email', ValidationError("Email address is already in use", code='invalid'))
+
+        return email
+
+    def clean(self):
+        super().clean()
+        old_password = self.cleaned_data.get('old_password')
+        new_password = self.cleaned_data.get('new_password')
+        new_repeat_password = self.cleaned_data.get('new_repeat_password')
+
+        if new_password and not old_password:
+            self.add_error('new_password', ValidationError("You must enter your old password", code='invalid'))
+
+        if new_password and not new_repeat_password:
+            self.add_error('new_repeat_password', ValidationError("You must repeat new password", code='invalid'))
+            return self.cleaned_data
+
+        if new_password and new_password != new_repeat_password:
+            self.add_error('new_repeat_password', ValidationError("New passwords don't match", code='invalid'))
+
+        return self.cleaned_data
+
+    def save(self):
+        email = self.cleaned_data['email']
+        new_password = self.cleaned_data['new_password']
+        avatar = self.files.get('avatar')
+
+        if email:
+            self.user.email = email
+
+        if new_password:
+            self.user.set_password(new_password)
+
+        if avatar:
+            self.user.profile.avatar = avatar
+
+        self.user.save()
+        self.user.profile.save()
+        return self.user
+
+
 class NewQuestionForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -159,10 +265,10 @@ class NewAnswerForm(forms.Form):
     )
 
     def save(self, user, question_id):
-        body = self.cleaned_data['body']  # Получаем текст ответа из cleaned_data
-        question = Question.objects.get(pk=question_id)  # Получаем объект вопроса по его идентификатору
+        body = self.cleaned_data['body']
+        question = Question.objects.get(pk=question_id)
 
         answer = Answer(body=body, question=question, author=user)
-        answer.save()  # Сохраняем новый ответ в базу данных
+        answer.save()
 
         return answer
