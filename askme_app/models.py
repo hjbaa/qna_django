@@ -127,7 +127,8 @@ class Profile(models.Model):
     def upvoted_for(self, object):
         try:
             content_type = ContentType.objects.get_for_model(object)
-            vote = Vote.objects.get(content_type=content_type, object_id=object.id, author=self)
+            vote = Vote.objects.get(content_type=content_type, object_id=object.id, author=self.user)
+
             return vote.rate == 1
         except Vote.DoesNotExist:
             return False
@@ -135,7 +136,7 @@ class Profile(models.Model):
     def downvoted_for(self, object):
         try:
             content_type = ContentType.objects.get_for_model(object)
-            vote = Vote.objects.get(content_type=content_type, object_id=object.id, author=self)
+            vote = Vote.objects.get(content_type=content_type, object_id=object.id, author=self.user)
             return vote.rate == -1
         except Vote.DoesNotExist:
             return False

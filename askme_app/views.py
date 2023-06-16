@@ -15,9 +15,11 @@ from askme_app.forms import LoginForm, SignupForm, NewQuestionForm, NewAnswerFor
 def index(request):
     page_obj = paginate(Question.objects.sorted_by_created_at(), request)
 
-    context = {'page_obj': page_obj,
-               'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
-               }
+    context = {
+        'page_obj': page_obj,
+        'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
+        'user': request.user
+    }
 
     return render(request, 'index.html', context)
 
@@ -45,6 +47,7 @@ def show_question(request, question_id):
         'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
         'page_obj': page_obj,
         'form': answer_form,
+        'user': request.user
     }
     return render(request, 'show_question.html', context)
 
@@ -52,9 +55,11 @@ def show_question(request, question_id):
 @require_http_methods(['GET'])
 def hot(request):
     page_obj = paginate(Question.objects.sorted_by_rating(), request)
-    context = {'page_obj': page_obj,
-               'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
-               }
+    context = {
+        'page_obj': page_obj,
+        'global_tags': Tag.objects.sort_by_related_question_quantity()[:10],
+        'user': request.user
+    }
 
     return render(request, 'hot.html', context)
 
