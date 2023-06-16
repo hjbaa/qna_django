@@ -12,11 +12,8 @@ $(document).ready(function() {
       },
       dataType: 'json',
       success: function(data) {
-        console.log(data)
-
         if (data.success) {
           const unmarked = data.unmarked_ans;
-          console.log(unmarked)
           if (unmarked === answer_id) {
             button.find('img').attr('src', '/static/svg/correct-grey.svg');
           } else {
