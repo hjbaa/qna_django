@@ -10,9 +10,15 @@
         <div class="d-flex ps-3 pt-2">
           <div class="question-rating">
             <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-              <button type="button" class="btn btn-outline-secondary" id="upvote-question-{{ question.id }}"><img src="{% static "svg/arrow-up.svg" %}" alt="up-vote"/></button>
-              <button type="button" class="btn btn-outline-secondary disabled" id="question-{{ question.id }}-rating">{{ question.get_rating }}</button>
-              <button type="button" class="btn btn-outline-secondary" id="downvote-question-{{ question.id }}"><img src="{% static "svg/arrow-down.svg" %}" alt="down-vote"/></button>
+              <button type="button" class="btn btn-outline-secondary vote-button" data-content-type="question" data-object-id="{{ question.id }}" data-vote-action="upvote">
+                <img src="{% static "svg/arrow-up.svg" %}" alt="up-vote">
+              </button>
+              <button type="button" class="btn btn-outline-secondary disabled rating-button" data-content-type="question" data-object-id="{{ question.id }}">
+                {{ question.get_rating }}
+              </button>
+              <button type="button" class="btn btn-outline-secondary vote-button" data-content-type="question" data-object-id="{{ question.id }}" data-vote-action="downvote">
+                <img src="{% static "svg/arrow-down.svg" %}" alt="down-vote">
+              </button>
             </div>
           </div>
         </div>

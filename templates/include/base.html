@@ -83,7 +83,13 @@
   </div>
 </footer>
 
+<script>
+    let csrf_token = '{{ csrf_token }}'
+</script>
+
 <script src="{% static "js/bootstrap.bundle.js" %}" crossorigin="anonymous"></script>
+<script src="{% static 'jquery/jquery.min.js' %}"></script>
+<script src="{% static 'js/voting.js' %}"></script>
 
 </body>
 </html>

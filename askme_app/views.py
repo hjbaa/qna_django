@@ -2,11 +2,12 @@ from django.contrib import auth, messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect, reverse
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
-
-from askme_app.models import Question, Tag, Answer
+from django.contrib.contenttypes.models import ContentType
+from askme_app.models import Question, Tag, Answer, Vote
 from askme_app.forms import LoginForm, SignupForm, NewQuestionForm, NewAnswerForm, SettingsForm
 
 
@@ -137,10 +138,52 @@ def log_out(request):
 
 
 @csrf_protect
-@login_required(login_url="login")
-@require_http_methods(['POST', 'DELETE'])
-def vote(request, votable_id, votable_type):
-    ...
+@login_required(login_url="login", redirect_field_name="continue")
+@require_http_methods(['POST'])
+def vote(request):
+    print(f"---------------------------{request.POST}")
+
+    content_type = request.POST.get('content_type')
+    object_id = int(request.POST.get('object_id'))
+    vote_action = request.POST.get('vote_action')
+    user = request.user
+
+    if content_type == 'question':
+        content_object = get_object_or_404(Question, id=object_id)
+    elif content_type == 'answer':
+        content_object = get_object_or_404(Answer, id=object_id)
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid content type'})
+
+    vote_value = 1 if vote_action == 'upvote' else -1
+
+    # Check if the user has already voted for the content
+    vote, created = Vote.objects.get_or_create(
+        content_type=ContentType.objects.get_for_model(content_object),
+        object_id=object_id,
+        author=user,
+    )
+
+    if not created:
+        # If the user has already voted, update the vote value
+        if vote.rate == vote_value:
+            # If the existing vote value is the same as the new vote value,
+            # remove the vote (cancel the vote)
+            vote.delete()
+            vote_value = 0
+        else:
+            # If the existing vote value is different, update the vote value
+            vote.rate = vote_value
+            vote.save()
+    else:
+        # If the user hasn't voted yet, create a new vote
+        vote.rate = vote_value
+        vote.save()
+
+    # Recalculate the rating of the content
+    rating = content_object.get_rating()
+
+    return JsonResponse({'success': True, 'rating': rating})
 
 
 @csrf_protect
@@ -160,8 +203,8 @@ def settings(request):
             login_form = LoginForm(data)
             login_form.is_valid()
 
-            authenticated_user = auth.authenticate(request=request, **login_form.cleaned_data)
-            auth.login(request, authenticated_user)
+            authenticated_user = authenticate(request=request, **login_form.cleaned_data)
+            login(request, authenticated_user)
             messages.success(request, 'Your account successfully updated')
             return redirect(reverse('settings'))
     else:
