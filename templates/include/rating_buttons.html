@@ -1,5 +1,5 @@
 {% load static %}
-{% load profile_tags %}
+{% load user_tags %}
 
 {% block rating-buttons %}
   {% if user.is_authenticated and user|upvoted_for:object %}

@@ -143,10 +143,12 @@ def log_out(request):
 
 
 @csrf_protect
-@login_required(login_url="login", redirect_field_name="continue")
 @require_http_methods(['POST'])
 def vote(request):
-    print(f"---------------------------{request.POST}")
+    user = request.user
+
+    if not user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'You should login to vote!'})
 
     content_type = request.POST.get('content_type')
     object_id = int(request.POST.get('object_id'))
@@ -181,6 +183,42 @@ def vote(request):
     rating = content_object.get_rating()
 
     return JsonResponse({'success': True, 'rating': rating})
+
+
+@csrf_protect
+@login_required(login_url="login", redirect_field_name="continue")
+@require_http_methods(['POST'])
+def mark_correct(request):
+    print(f"--------------------req: {request.POST}")
+
+    if request.user.is_authenticated:
+        answer_id = request.POST.get("answer_id")
+        answer = Answer.objects.get(pk=answer_id)
+
+        if answer.question.author != request.user:
+            return JsonResponse({"success": False}, status=403)
+
+        prev_correct = answer.question.correct_answer()
+        if prev_correct == answer:
+            answer.is_correct = False
+            answer.save()
+
+            return JsonResponse({"success": True, "unmarked_ans": answer.id})
+
+        ctx = {}
+        if prev_correct is not None:
+            prev_correct.is_correct = False
+            prev_correct.save()
+            ctx["unmarked_ans"] = prev_correct.id
+
+        answer.is_correct = True
+        answer.save()
+
+        ctx["success"] = True
+
+        return JsonResponse(ctx)
+
+    return JsonResponse({"success": False}, status=400)
 
 
 @csrf_protect

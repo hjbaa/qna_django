@@ -61,7 +61,7 @@ class Question(models.Model):
     objects = QuestionManager()
 
     def __str__(self):
-        return f"title: {self.title};\t votes: {self.votes};"
+        return f"id: {self.id};\ttitle: {self.title}"
 
     def get_rating(self):
         rating = self.votes.aggregate(Sum('rate'))['rate__sum']
@@ -69,6 +69,13 @@ class Question(models.Model):
 
     def answers_count(self):
         return Count(Answer.objects.filter(question_id=self.id))
+
+    def correct_answer(self):
+        try:
+            ret = Answer.objects.get(question_id=self.id, is_correct=True)
+            return ret
+        except Answer.DoesNotExist:
+            return None
 
 
 class AnswerManager(models.Manager):
@@ -120,9 +127,6 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='avatars', null=False, blank=False, default='no-profile-picture-icon.png')
     created_at = models.DateTimeField(auto_now_add=True)
-
-    def is_author_of(self, object):
-        return object.author == self.user
 
     def upvoted_for(self, object):
         try:

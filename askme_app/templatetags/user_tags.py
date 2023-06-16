@@ -11,3 +11,8 @@ def upvoted_for(user, obj):
 @register.filter
 def downvoted_for(user, obj):
     return user.profile.downvoted_for(obj)
+
+
+@register.filter
+def author_of(user, obj):
+    return obj.author == user
