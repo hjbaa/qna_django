@@ -120,3 +120,22 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='avatars', null=False, blank=False, default='no-profile-picture-icon.png')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_author_of(self, object):
+        return object.author == self.user
+
+    def upvoted_for(self, object):
+        try:
+            content_type = ContentType.objects.get_for_model(object)
+            vote = Vote.objects.get(content_type=content_type, object_id=object.id, author=self)
+            return vote.rate == 1
+        except Vote.DoesNotExist:
+            return False
+
+    def downvoted_for(self, object):
+        try:
+            content_type = ContentType.objects.get_for_model(object)
+            vote = Vote.objects.get(content_type=content_type, object_id=object.id, author=self)
+            return vote.rate == -1
+        except Vote.DoesNotExist:
+            return False
