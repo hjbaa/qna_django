@@ -2,7 +2,6 @@
 {% load profile_tags %}
 
 {% block rating-buttons %}
-
   {% if user.is_authenticated and user|upvoted_for:object %}
     <button type="button" class="btn btn-outline-primary vote-button" data-content-type="{{ object_class }}" data-object-id="{{ object.id }}" data-vote-action="upvote">
       <img src="{% static "svg/arrow-up-blue.svg" %}" alt="up-vote">
