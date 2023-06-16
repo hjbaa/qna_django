@@ -1,12 +1,12 @@
 {% load static %}
 {% block rating-buttons %}
   <button type="button" class="btn btn-outline-secondary vote-button" data-content-type="{{ object_class }}" data-object-id="{{ object.id }}" data-vote-action="upvote">
-    <img src="{% static "svg/arrow-up.svg" %}" alt="up-vote">
+    <img src="{% static "svg/arrow-up-black.svg" %}" alt="up-vote">
   </button>
   <button type="button" class="btn btn-outline-secondary disabled rating-button" data-content-type="{{ object_class }}" data-object-id="{{ object.id }}">
     {{ object.get_rating }}
   </button>
   <button type="button" class="btn btn-outline-secondary vote-button" data-content-type="{{ object_class }}" data-object-id="{{ object.id }}" data-vote-action="downvote">
-    <img src="{% static "svg/arrow-down.svg" %}" alt="down-vote">
+    <img src="{% static "svg/arrow-down-black.svg" %}" alt="down-vote">
   </button>
 {% endblock %}

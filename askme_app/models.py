@@ -120,10 +120,3 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='avatars', null=False, blank=False, default='no-profile-picture-icon.png')
     created_at = models.DateTimeField(auto_now_add=True)
-
-
-def custom_method(self):
-    print(f"------------------------hello world from user!")
-
-
-User.custom_method = custom_method
