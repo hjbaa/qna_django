@@ -3,8 +3,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum, Count
 from django.db.models.functions import Coalesce
-
-from askme_django.settings import MEDIA_URL
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -75,9 +73,9 @@ class Question(models.Model):
 
 class AnswerManager(models.Manager):
     def sorted_by_rating(self, question_id):
-        return self.filter(question_id=question_id)\
-                   .annotate(rating=Coalesce(Sum('votes__rate'), 0))\
-                   .order_by('-rating')
+        return self.filter(question_id=question_id) \
+            .annotate(rating=Coalesce(Sum('votes__rate'), 0)) \
+            .order_by('-rating')
 
 
 class Answer(models.Model):
@@ -122,3 +120,10 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='avatars', null=False, blank=False, default='no-profile-picture-icon.png')
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+def custom_method(self):
+    print(f"------------------------hello world from user!")
+
+
+User.custom_method = custom_method

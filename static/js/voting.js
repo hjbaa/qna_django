@@ -7,7 +7,7 @@ $(document).ready(function() {
 
     $.ajax({
       type: 'POST',
-      url: 'vote/',
+      url: window.location.origin + '/vote/',
       data: {
         'content_type': content_type,
         'object_id': object_id,
@@ -18,8 +18,9 @@ $(document).ready(function() {
       success: function(data) {
         if (data.success) {
           // Update the rating on the page
-          const ratingButton = $('.rating-button[data-content-type="' + content_type + '"][data-content-id="' + object_id + '"]');
+          const ratingButton = $('.rating-button[data-content-type="' + content_type + '"][data-object-id="' + object_id + '"]');
           ratingButton.text(data.rating);
+          button.toggleClass('btn-primary text-white')
         } else {
           // Show error message if voting failed
           alert(data.error);

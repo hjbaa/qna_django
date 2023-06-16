@@ -157,7 +157,6 @@ def vote(request):
 
     vote_value = 1 if vote_action == 'upvote' else -1
 
-    # Check if the user has already voted for the content
     vote, created = Vote.objects.get_or_create(
         content_type=ContentType.objects.get_for_model(content_object),
         object_id=object_id,
@@ -165,22 +164,15 @@ def vote(request):
     )
 
     if not created:
-        # If the user has already voted, update the vote value
         if vote.rate == vote_value:
-            # If the existing vote value is the same as the new vote value,
-            # remove the vote (cancel the vote)
             vote.delete()
-            vote_value = 0
         else:
-            # If the existing vote value is different, update the vote value
             vote.rate = vote_value
             vote.save()
     else:
-        # If the user hasn't voted yet, create a new vote
         vote.rate = vote_value
         vote.save()
 
-    # Recalculate the rating of the content
     rating = content_object.get_rating()
 
     return JsonResponse({'success': True, 'rating': rating})
