@@ -1,64 +1,53 @@
 $(document).ready(function() {
   $('.vote-button').click(function() {
     const button = $(this);
-    const vote_action = button.data('vote-action');
-    const content_type = button.data('content-type');
-    const object_id = button.data('object-id');
+    const voteAction = button.data('vote-action');
+    const contentType = button.data('content-type');
+    const objectId = button.data('object-id');
 
     $.ajax({
       type: 'POST',
-      url: window.location.origin + '/vote/',
+      url: `${window.location.origin}/vote/`,
       data: {
-        'content_type': content_type,
-        'object_id': object_id,
-        'vote_action': vote_action,
+        'content_type': contentType,
+        'object_id': objectId,
+        'vote_action': voteAction,
         'csrfmiddlewaretoken': csrf_token
       },
       dataType: 'json',
-      success: function(data) {
+      success: function (data) {
         if (data.success) {
-          const ratingButton = $('.rating-button[data-content-type="' + content_type + '"][data-object-id="' + object_id + '"]');
+          const button = $(`.vote-button[data-content-type="${contentType}"][data-object-id="${objectId}"][data-vote-action="${voteAction}"]`);
+          const ratingButton = $(`.rating-button[data-content-type="${contentType}"][data-object-id="${objectId}"]`);
           ratingButton.text(data.rating);
 
-          let another_button;
-          let another_button_icon;
+          const anotherButtonAction = voteAction === 'upvote' ? 'downvote' : 'upvote';
+          const anotherButton = $(`.vote-button[data-content-type="${contentType}"][data-object-id="${objectId}"][data-vote-action="${anotherButtonAction}"]`);
+          const { upvote_icon_black, upvote_icon_blue, downvote_icon_black, downvote_icon_blue } = data;
+          const anotherButtonIcon = voteAction === 'upvote' ? downvote_icon_black : upvote_icon_black;
 
-          if (vote_action === 'upvote') {
-            another_button = $('.vote-button[data-content-type="' + content_type + '"][data-object-id="' + object_id + '"][data-vote-action="downvote"]');
-            another_button_icon = '/static/svg/arrow-down-black.svg';
-          } else {
-            another_button = $('.vote-button[data-content-type="' + content_type + '"][data-object-id="' + object_id + '"][data-vote-action="upvote"]');
-            another_button_icon = '/static/svg/arrow-up-black.svg';
-          }
-
-          another_button.removeClass('btn-outline-primary');
-          another_button.addClass('btn-outline-secondary');
-          another_button.find('img').attr('src', another_button_icon)
-
-          changeButtonIcon(button, vote_action)
-          button.toggleClass('btn-outline-secondary btn-outline-primary')
+          anotherButton.removeClass('btn-outline-primary').addClass('btn-outline-secondary');
+          anotherButton.find('img').attr('src', anotherButtonIcon);
+          changeButtonIcon(button, voteAction, data);
+          button.toggleClass('btn-outline-secondary btn-outline-primary');
         } else {
           alert(data.error);
         }
       },
-      error: function(xhr, textStatus, errorThrown) {
-        alert('Voting request failed: ' + errorThrown);
+      error: function (xhr, textStatus, errorThrown) {
+        alert(`Voting request failed: ${errorThrown}`);
       }
     });
   });
 });
 
-function changeButtonIcon(button, action) {
+function changeButtonIcon(button, action, data) {
   const buttonIcon = button.find('img');
-  const arrowUpBlack = '/static/svg/arrow-up-black.svg';
-  const arrowUpBlue = '/static/svg/arrow-up-blue.svg';
-  const arrowDownBlack = '/static/svg/arrow-down-black.svg';
-  const arrowDownBlue = '/static/svg/arrow-down-blue.svg';
+  const { upvote_icon_black, upvote_icon_blue, downvote_icon_black, downvote_icon_blue } = data;
 
   if (action === 'upvote') {
-    buttonIcon.attr('src', buttonIcon.attr('src').indexOf(arrowUpBlack) === -1 ? arrowUpBlack : arrowUpBlue);
+    buttonIcon.attr('src', buttonIcon.attr('src').includes(upvote_icon_black) ? upvote_icon_blue : upvote_icon_black);
   } else {
-    buttonIcon.attr('src', buttonIcon.attr('src').indexOf(arrowUpBlack) === -1 ? arrowDownBlack : arrowDownBlue);
+    buttonIcon.attr('src', buttonIcon.attr('src').includes(downvote_icon_black) ? downvote_icon_blue : downvote_icon_black);
   }
 }
-

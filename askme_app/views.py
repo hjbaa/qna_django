@@ -9,6 +9,7 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.contenttypes.models import ContentType
 from askme_app.models import Question, Tag, Answer, Vote
 from askme_app.forms import LoginForm, SignupForm, NewQuestionForm, NewAnswerForm, SettingsForm
+from askme_django.settings import STATIC_URL
 
 
 @require_http_methods('GET')
@@ -181,8 +182,15 @@ def vote(request):
         vote.save()
 
     rating = content_object.get_rating()
-
-    return JsonResponse({'success': True, 'rating': rating})
+    resp = {
+        "upvote_icon_black": f"/{STATIC_URL}svg/arrow-up-black.svg",
+        "upvote_icon_blue": f"/{STATIC_URL}svg/arrow-up-blue.svg",
+        "downvote_icon_black": f"/{STATIC_URL}svg/arrow-down-black.svg",
+        "downvote_icon_blue": f"/{STATIC_URL}svg/arrow-down-blue.svg",
+        "success": True,
+        "rating": rating
+    }
+    return JsonResponse(resp)
 
 
 @csrf_protect
@@ -198,25 +206,30 @@ def mark_correct(request):
     if answer.question.author != request.user:
         return JsonResponse({"success": False, 'error': 'You are not hte author of question!'}, status=403)
 
+    resp = {
+        "correct_answer_icon_path": f"/{STATIC_URL}svg/correct-green.svg",
+        "unmarked_answer_icon_path": f"/{STATIC_URL}svg/correct-grey.svg",
+    }
     prev_correct = answer.question.correct_answer()
     if prev_correct == answer:
         answer.is_correct = False
         answer.save()
 
-        return JsonResponse({"success": True, "unmarked_ans": answer.id})
+        resp["success"] = True
+        resp["unmarked_ans"] = answer.id
+        return JsonResponse(resp)
 
-    ctx = {}
     if prev_correct is not None:
         prev_correct.is_correct = False
         prev_correct.save()
-        ctx["unmarked_ans"] = prev_correct.id
+        resp["unmarked_ans"] = prev_correct.id
 
     answer.is_correct = True
     answer.save()
 
-    ctx["success"] = True
+    resp["success"] = True
 
-    return JsonResponse(ctx)
+    return JsonResponse(resp)
 
 
 @csrf_protect
