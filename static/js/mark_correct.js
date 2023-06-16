@@ -35,7 +35,3 @@ $(document).ready(function() {
     });
   });
 });
-
-function findPreviousCorrect() {
-
-}
