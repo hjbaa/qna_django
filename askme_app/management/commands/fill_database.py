@@ -3,7 +3,7 @@ import random
 from django.core.management.base import BaseCommand
 from mimesis import Person
 from mimesis.locales import Locale
-from askme_app.models import Question, Tag, Vote, Answer
+from askme_app.models import Question, Tag, Vote, Answer, Profile
 from django.contrib.auth.models import User
 from mimesis import Text
 from django.db.utils import IntegrityError
@@ -27,7 +27,7 @@ class Command(BaseCommand):
 
 
 def _fill_users(ratio):
-    for i in range(ratio):
+    for _ in range(ratio):
         person = Person(Locale.EN)
 
         try:
@@ -40,12 +40,15 @@ def _fill_users(ratio):
                      )
 
             u.save()
+
+            p = Profile(user=u)
+            p.save()
         except IntegrityError:
             continue
 
 
 def _fill_tags(ratio):
-    for i in range(ratio):
+    for _ in range(ratio):
         txt = Text(Locale.EN)
         try:
             t = Tag(title=txt.word())
@@ -55,7 +58,7 @@ def _fill_tags(ratio):
 
 
 def _fill_questions(ratio):
-    for i in range(ratio):
+    for _ in range(ratio):
         txt = Text(Locale.EN)
         random_user = User.objects.order_by('?').first()
 
@@ -72,53 +75,29 @@ def _fill_questions(ratio):
 
 
 def _fill_answers(ratio):
-    for i in range(ratio):
+    for _ in range(ratio):
         txt = Text(Locale.EN)
-        random_user = None
-        random_question = None
 
-        while random_user is None:
-            try:
-                random_user = User.objects.get(pk=random.randint(1, 10000))
-            except User.DoesNotExist:
-                continue
-
-        while random_question is None:
-            try:
-                random_question = Question.objects.get(pk=random.randint(1, 100000))
-            except User.DoesNotExist:
-                continue
+        random_user = User.objects.order_by('?').first()
+        random_question = Question.objects.order_by('?').first()
 
         a = Answer(body=txt.text(30), author=random_user, question=random_question, is_correct=False)
         a.save()
 
 
 def _fill_votes(ratio):
-    for i in range(ratio):
-        random_model_instance = None
-
+    for _ in range(ratio):
         if random.randint(0, 1) == 0:
-            while random_model_instance is None:
-                try:
-                    random_model_instance = Question.objects.get(pk=random.randint(1, 100000))
-                except Question.DoesNotExist:
-                    continue
+            random_model_instance = Question.objects.order_by('?').first()
         else:
-            while random_model_instance is None:
-                try:
-                    random_model_instance = Answer.objects.get(pk=random.randint(1, 1_000_000))
-                except Answer.DoesNotExist:
-                    continue
+            random_model_instance = Answer.objects.order_by('?').first()
 
         votes = [-1, 1]
 
-        random_user = None
+        random_user = User.objects.order_by('?').first()
 
-        while random_user is None:
-            try:
-                random_user = User.objects.get(pk=random.randint(1, 10000))
-            except User.DoesNotExist:
-                continue
-
-        v = Vote(rate=random.sample(votes, 1)[0], author=random_user, content_object=random_model_instance)
-        v.save()
+        try:
+            v = Vote(rate=random.sample(votes, 1)[0], author=random_user, content_object=random_model_instance)
+            v.save()
+        except IntegrityError:
+            continue

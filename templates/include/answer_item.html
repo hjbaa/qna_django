@@ -1,5 +1,6 @@
 {% block answer %}
 {% load static %}
+{% load user_tags %}
 
   <div class="answer mb-4">
     <div class="row">
@@ -10,11 +11,27 @@
         <div class="d-flex ps-3 pt-2">
           <div class="answer-rating">
             <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-              <button type="button" class="btn btn-outline-secondary"><img src="{% static "svg/arrow-up.svg" %}" alt="down-vote"/></button>
-              <button type="button" class="btn btn-outline-secondary disabled">{{ answer.get_rating }}</button>
-              <button type="button" class="btn btn-outline-secondary"><img src="{% static "svg/arrow-down.svg" %}" alt="down-vote"/></button>
+              {% block rating-buttons %}
+              {% include 'include/rating_buttons.html' with object=answer object_class='answer' %}
+            {% endblock %}
             </div>
           </div>
+        </div>
+
+        <div class="is-correct d-flex ps-1 pt-4 align-items-start">
+          {% if user.is_authenticated and user|author_of:answer.question %}
+            <button type="button" class="btn border-0 mark-correct-btn" data-answer-id="{{ answer.id }}">
+              {% if answer.is_correct %}
+                <img src="{% static 'svg/correct-green.svg' %}" alt=""/>
+              {% else %}
+                <img src="{% static 'svg/correct-grey.svg' %}" alt=""/>
+              {% endif %}
+            </button>
+          {% elif answer.is_correct %}
+            <button type="button" class="btn disabled border-0">
+              <img src="{% static 'svg/correct-green.svg' %}" alt=""/>
+            </button>
+          {% endif %}
         </div>
       </div>
 
@@ -23,12 +40,6 @@
           <p class="text-muted">
             {{ answer.body }}
           </p>
-        </div>
-        <div class="answer-links">
-          <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="">
-              <label class="form-check-label" for="">Correct</label>
-          </div>
         </div>
       </div>
     </div>

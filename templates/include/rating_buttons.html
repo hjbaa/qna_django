@@ -1,0 +1,29 @@
+{% load static %}
+{% load user_tags %}
+
+{% block rating-buttons %}
+  {% if user.is_authenticated and user|upvoted_for:object %}
+    <button type="button" class="btn btn-outline-primary vote-button" data-content-type="{{ object_class }}" data-object-id="{{ object.id }}" data-vote-action="upvote">
+      <img src="{% static "svg/arrow-up-blue.svg" %}" alt="up-vote">
+    </button>
+  {% else %}
+    <button type="button" class="btn btn-outline-secondary vote-button" data-content-type="{{ object_class }}" data-object-id="{{ object.id }}" data-vote-action="upvote">
+      <img src="{% static "svg/arrow-up-black.svg" %}" alt="up-vote">
+    </button>
+  {% endif %}
+
+  <button type="button" class="btn btn-outline-secondary disabled rating-button" data-content-type="{{ object_class }}" data-object-id="{{ object.id }}">
+    {{ object.get_rating }}
+  </button>
+
+  {% if user.is_authenticated and user|downvoted_for:object %}
+    <button type="button" class="btn btn-outline-primary vote-button" data-content-type="{{ object_class }}" data-object-id="{{ object.id }}" data-vote-action="downvote">
+      <img src="{% static "svg/arrow-down-blue.svg" %}" alt="down-vote">
+    </button>
+  {% else %}
+    <button type="button" class="btn btn-outline-secondary vote-button" data-content-type="{{ object_class }}" data-object-id="{{ object.id }}" data-vote-action="downvote">
+      <img src="{% static "svg/arrow-down-black.svg" %}" alt="down-vote">
+    </button>
+  {% endif %}
+
+{% endblock %}

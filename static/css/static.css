@@ -96,6 +96,10 @@ main > .container {
     min-height: 200px;
 }
 
+.correct {
+    border: 1px solid #41fa41;
+}
+
 .answer-avatar {
     height: 90px;
     width: 90px;

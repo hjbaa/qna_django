@@ -1,0 +1,40 @@
+{% extends 'include/base_with_right_column.html' %}
+{% load static %}
+
+{% block content-header %}
+  <ul class="list-group list-group-horizontal mt-5 align-items-baseline mb-4">
+    <li class="list-group-item border-0 px-0">
+      <h1>Settings</h1>
+    </li>
+  </ul>
+{% endblock %}
+
+{% block left-column %}
+
+  {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form action="{% url 'settings' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% for field in form %}
+      <div class="text-danger">
+        {{ field.errors }}
+      </div>
+
+      <div class="form-outline mb-4">
+        {{ field }}
+        {{ field.label_tag }}
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-outline-primary">Update</button>
+  </form>
+{% endblock %}

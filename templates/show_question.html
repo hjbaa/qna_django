@@ -17,9 +17,9 @@
         <div class="d-flex ps-3 pt-2">
           <div class="question-rating">
             <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-              <button type="button" class="btn btn-outline-secondary"><img src="{% static "svg/arrow-up.svg" %}" alt="down-vote"/></button>
-              <button type="button" class="btn btn-outline-secondary disabled">{{ question.get_rating }}</button>
-              <button type="button" class="btn btn-outline-secondary"><img src="{% static "svg/arrow-down.svg" %}" alt="down-vote"/></button>
+              {% block rating-buttons %}
+                {% include 'include/rating_buttons.html' with object=question object_class='question'%}
+              {% endblock %}
             </div>
           </div>
         </div>

@@ -3,8 +3,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum, Count
 from django.db.models.functions import Coalesce
-
-from askme_django.settings import MEDIA_URL
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -63,7 +61,7 @@ class Question(models.Model):
     objects = QuestionManager()
 
     def __str__(self):
-        return f"title: {self.title};\t votes: {self.votes};"
+        return f"id: {self.id};\ttitle: {self.title}"
 
     def get_rating(self):
         rating = self.votes.aggregate(Sum('rate'))['rate__sum']
@@ -72,12 +70,19 @@ class Question(models.Model):
     def answers_count(self):
         return Count(Answer.objects.filter(question_id=self.id))
 
+    def correct_answer(self):
+        try:
+            ret = Answer.objects.get(question_id=self.id, is_correct=True)
+            return ret
+        except Answer.DoesNotExist:
+            return None
+
 
 class AnswerManager(models.Manager):
     def sorted_by_rating(self, question_id):
-        return self.filter(question_id=question_id)\
-                   .annotate(rating=Coalesce(Sum('votes__rate'), 0))\
-                   .order_by('-rating')
+        return self.filter(question_id=question_id) \
+            .annotate(rating=Coalesce(Sum('votes__rate'), 0)) \
+            .order_by('-rating')
 
 
 class Answer(models.Model):
@@ -122,3 +127,20 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='avatars', null=False, blank=False, default='no-profile-picture-icon.png')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def upvoted_for(self, object):
+        try:
+            content_type = ContentType.objects.get_for_model(object)
+            vote = Vote.objects.get(content_type=content_type, object_id=object.id, author=self.user)
+
+            return vote.rate == 1
+        except Vote.DoesNotExist:
+            return False
+
+    def downvoted_for(self, object):
+        try:
+            content_type = ContentType.objects.get_for_model(object)
+            vote = Vote.objects.get(content_type=content_type, object_id=object.id, author=self.user)
+            return vote.rate == -1
+        except Vote.DoesNotExist:
+            return False
